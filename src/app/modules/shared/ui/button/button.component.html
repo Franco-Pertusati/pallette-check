@@ -1,1 +1,8 @@
-<button class="bg-coral-400">a</button>
+<button [class]="getClasses()">
+  @if (showIcon() && icon()) {
+    <i class="material-icons-round">{{ icon() }}</i>
+  }
+  @if (showLabel() && label()) {
+    <span>{{ label() }}</span>
+  }
+</button>
