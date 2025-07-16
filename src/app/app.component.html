@@ -1,3 +1,13 @@
-<div class="">
-  <app-button />
+<div class="bg-neutral-50 h-screen overflow-y-hidden max-h-screen flex flex-col items-center">
+  <app-navbar />
+  <hr class="border-neutral-300 w-full" />
+  <div class="flex h-full max-h-full w-full max-w-6xl">
+    <div class="max-w-2xs w-full">
+      <app-sidebar />
+    </div>
+    <div class="w-full h-full">
+      <app-components-showcase />
+    </div>
+    <app-output-sidebar />
+  </div>
 </div>

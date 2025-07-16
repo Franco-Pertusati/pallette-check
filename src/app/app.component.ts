@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { ButtonComponent } from "./modules/shared/ui/button/button.component";
+import { ComponentsShowcaseComponent } from "./modules/shared/components-showcase/components-showcase.component";
+import { NavbarComponent } from "./modules/shared/ui/navbar/navbar.component";
+import { SidebarComponent } from "./modules/shared/ui/sidebar/sidebar.component";
+import { OutputSidebarComponent } from "./modules/shared/output-sidebar/output-sidebar.component";
 
 @Component({
   selector: 'app-root',
-  imports: [ButtonComponent],
+  imports: [ComponentsShowcaseComponent, NavbarComponent, SidebarComponent, OutputSidebarComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
-  title = 'pallet-check';
-}
+export class AppComponent {}

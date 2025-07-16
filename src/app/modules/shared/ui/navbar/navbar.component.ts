@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 import { ButtonComponent } from "../button/button.component";
 
 @Component({
-  selector: 'app-sidebar',
+  selector: 'app-navbar',
   imports: [ButtonComponent],
-  templateUrl: './sidebar.component.html'
+  templateUrl: './navbar.component.html'
 })
-export class SidebarComponent {
+export class NavbarComponent {
 
 }
