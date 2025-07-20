@@ -1,11 +1,11 @@
-<div class="bg-neutral-50 h-screen overflow-y-hidden max-h-screen flex flex-col items-center">
+<div class="h-screen bg-neutral-50 flex flex-col items-center overflow-hidden">
   <app-navbar />
   <hr class="border-neutral-300 w-full" />
-  <div class="flex h-full max-h-full w-full max-w-6xl">
+  <div class="flex w-full max-w-6xl flex-1 overflow-hidden">
     <div class="max-w-2xs w-full">
       <app-sidebar />
     </div>
-    <div class="w-full h-full">
+    <div class="w-full overflow-y-auto">
       <app-components-showcase />
     </div>
     <app-output-sidebar />
