@@ -3,10 +3,11 @@ import { ComponentsShowcaseComponent } from "./modules/shared/components-showcas
 import { NavbarComponent } from "./modules/shared/ui/navbar/navbar.component";
 import { SidebarComponent } from "./modules/shared/ui/sidebar/sidebar.component";
 import { OutputSidebarComponent } from "./modules/shared/output-sidebar/output-sidebar.component";
+import { PalletGeneratorComponent } from "./modules/shared/pallet-generator/pallet-generator.component";
 
 @Component({
   selector: 'app-root',
-  imports: [ComponentsShowcaseComponent, NavbarComponent, SidebarComponent, OutputSidebarComponent],
+  imports: [ComponentsShowcaseComponent, NavbarComponent, SidebarComponent, OutputSidebarComponent, PalletGeneratorComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
