@@ -1,4 +1,45 @@
-<div class="px-3 py-6 w-full flex justify-between" [style]="`background-color: #${colorData?.hex};`">
-  <span class="font-bold">{{ colorData?.name }}</span>
-  <span class="font-bold">{{ colorData?.hex }}</span>
+@let colorData = color();
+
+<div
+  class="px-3 py-6 w-full flex justify-between"
+  [style]="`background-color: #${colorData.hex};`"
+  (click)="isDialogOpen = !isDialogOpen"
+>
+  <span class="font-bold">{{ colorData.name }}</span>
+  <span class="font-bold">{{ colorData.hex }}</span>
 </div>
+
+@if (isDialogOpen) {
+  <app-dialog>
+    <div
+      class="flex flex-col gap-3 bg-neutral-50 rounded-3xl shadow-md border border-neutral-300 p-3"
+    >
+      <h2 class="font-bold text-xl">{{ colorData.name }}</h2>
+      <div
+        class="flex items-center border-neutral-300 border rounded-md gap-2 p-2 focus-within:border focus-within:border-neutral-600"
+      >
+        <div
+          class="p-3 rounded-md h-full focus-within:"
+          [style]="`background-color: #${colorData.hex};`"
+        ></div>
+        <input
+          type="text"
+          class="focus:outline-none w-full"
+          [value]="`#${colorData.hex}`"
+        />
+      </div>
+      <div class="flex justify-between">
+        <app-button
+          [label]="'Cancelar'"
+          [style]="'text'"
+          (click)="isDialogOpen = false"
+        />
+        <app-button
+          [label]="'Aplicar'"
+          [style]="'filled'"
+          (click)="isDialogOpen = false"
+        />
+      </div>
+    </div>
+  </app-dialog>
+}
