@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { ButtonComponent } from "../ui/button/button.component";
-import { ColorData } from '../../core/interfaces/colorData';
 import { PalletecolorInputComponent } from "./palletecolor-input/palletecolor-input.component";
-import { PalleteData } from '../../core/interfaces/palleteData';
+import { PalleteData } from '../../../core/interfaces/palleteData';
+import { PalletService } from '../../../core/services/pallet.service';
 
 @Component({
   selector: 'app-pallet-generator',
@@ -18,5 +18,13 @@ export class PalletGeneratorComponent {
       { name: 'Secondary', hex: 'f4718d' },
     ],
     isDark: false
+  }
+
+  constructor(public palletService: PalletService) {
+    this.palleteData = palletService.generateRandomPalette()
+   }
+
+  generateRandomPallette() {
+    this.palleteData = this.palletService.generateRandomPalette()
   }
 }

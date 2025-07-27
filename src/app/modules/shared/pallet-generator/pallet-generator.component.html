@@ -9,7 +9,7 @@
     }
   </div>
   <div class="px-3 flex gap-3 flex-row-reverse">
-    <app-button [icon]="'repeat'" />
+    <app-button [icon]="'repeat'" (click)="generateRandomPallette()" />
     <app-button [label]="'Adjust'" [icon]="'build'" />
     <app-button [label]="'Share'" [icon]="'share'" />
     <app-button [icon]="'star'" />
