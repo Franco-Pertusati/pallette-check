@@ -1,12 +1,12 @@
 @let colorData = color();
 
 <div
-  class="px-3 py-6 w-full flex justify-between"
+  class="px-3 py-6 w-full flex justify-between rounded-xl"
   [style]="`background-color: #${colorData.hex};`"
   (click)="isDialogOpen = !isDialogOpen"
 >
-  <span class="font-bold">{{ colorData.name }}</span>
-  <span class="font-bold">{{ colorData.hex }}</span>
+  <span class="font-bold" [style]="`color: ${colorData.optimalTextColor}`">{{ colorData.name }}</span>
+  <span class="font-bold" [style]="`color: ${colorData.optimalTextColor}`">{{ colorData.hex }}</span>
 </div>
 
 @if (isDialogOpen) {

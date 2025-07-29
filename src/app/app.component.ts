@@ -8,7 +8,7 @@ import { DialogComponent } from "./modules/shared/prt-ui/dialog/dialog.component
 
 @Component({
   selector: 'app-root',
-  imports: [ComponentsShowcaseComponent, NavbarComponent, SidebarComponent, OutputSidebarComponent, PalletGeneratorComponent, DialogComponent],
+  imports: [ComponentsShowcaseComponent, NavbarComponent, PalletGeneratorComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

@@ -1,16 +1,14 @@
 <div class="h-16">
-  <nav
-    class="flex w-screen max-w-6xl p-3 justify-between items-center fixed top-0 border-b border-neutral-300 bg-neutral-50"
-  >
-    <div class="flex gap-1 items-center">
+  <nav class="flex w-screen max-w-6xl p-3 justify-between items-center">
+    <div class="flex gap-3 items-center">
       <a class="bg-neutral-900 p-2 rounded-md">
         <h1 class="text-neutral-50 font-bold">PC</h1>
       </a>
-      <app-button [style]="'text'" [label]="'More Palletes'" />
+      <app-button [style]="'text'" [label]="'Pallettes'" />
     </div>
     <div class="flex gap-2">
       <app-button [icon]="'dark_mode'" [style]="'text'" />
-      <app-button [icon]="'menu'" [style]="'text'" />
+      <app-button [label]="'Login'" [style]="'filled'" />
     </div>
   </nav>
 </div>

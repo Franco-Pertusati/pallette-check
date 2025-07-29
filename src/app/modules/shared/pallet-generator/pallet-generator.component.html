@@ -1,16 +1,15 @@
-<div class="py-3 flex flex-col gap-3">
-  <div class="px-3 w-full flex justify-between items-center">
+<div class="p-3 flex flex-col gap-3 border-r border-neutral-300 h-full">
+  <div class="w-full flex justify-between items-center">
     <h2 class="font-bold text-lg">Color pallete</h2>
     <app-button [icon]="'panorama_vertical'" />
   </div>
-  <div class="flex flex-col">
+  <div class="flex flex-col gap-1">
     @for (color of palleteData.colors; track $index) {
       <app-palletecolor-input [color]="color" />
     }
   </div>
-  <div class="px-3 flex gap-3 flex-row-reverse">
+  <div class="flex gap-3 flex-row-reverse">
     <app-button [icon]="'repeat'" (click)="generateRandomPallette()" />
-    <app-button [label]="'Adjust'" [icon]="'build'" />
     <app-button [label]="'Share'" [icon]="'share'" />
     <app-button [icon]="'star'" />
   </div>

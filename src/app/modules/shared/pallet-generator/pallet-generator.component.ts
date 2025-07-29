@@ -12,10 +12,10 @@ import { PalletService } from '../../../core/services/pallet.service';
 export class PalletGeneratorComponent {
   palleteData: PalleteData = {
     colors: [
-      { name: 'Text', hex: '0b0218' },
-      { name: 'Background', hex: 'f8f2fe' },
-      { name: 'Primary', hex: '8319ee' },
-      { name: 'Secondary', hex: 'f4718d' },
+      { name: 'Text', hex: '0b0218', optimalTextColor: 'black' },
+      { name: 'Background', hex: 'f8f2fe', optimalTextColor: 'black' },
+      { name: 'Primary', hex: '8319ee', optimalTextColor: 'black' },
+      { name: 'Secondary', hex: 'f4718d', optimalTextColor: 'black' },
     ],
     isDark: false
   }
