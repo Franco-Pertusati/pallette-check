@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
-import { ButtonComponent } from "../ui/button/button.component";
-import { CardComponent } from "../exampleComponents/card/card.component";
+import { PalletService } from '../../../core/services/pallet.service';
 
 @Component({
   selector: 'app-components-showcase',
-  imports: [CardComponent, ButtonComponent],
+  imports: [],
   templateUrl: './components-showcase.component.html'
 })
 export class ComponentsShowcaseComponent {

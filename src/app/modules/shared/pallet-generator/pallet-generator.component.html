@@ -4,7 +4,7 @@
     <app-button [icon]="'panorama_vertical'" />
   </div>
   <div class="flex flex-col gap-1">
-    @for (color of palleteData.colors; track $index) {
+    @for (color of pallette.colors; track $index) {
       <app-palletecolor-input [color]="color" />
     }
   </div>

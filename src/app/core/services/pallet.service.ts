@@ -1,32 +1,71 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { PalleteData } from '../interfaces/palleteData';
+import { ColorData } from '../interfaces/colorData';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PalletService {
+  pallette = signal<PalleteData>({
+    colors: [
+      { name: 'Text', hex: '050706', optimalTextColor: 'white' },
+      { name: 'Background', hex: 'fcf5ff', optimalTextColor: 'black' },
+      { name: 'Primary', hex: 'c36bef', optimalTextColor: 'white' },
+      { name: 'secondary', hex: 'ef6cc3', optimalTextColor: 'white' },
+    ],
+    isDark: false
+  })
+
   constructor() { }
 
-  generateRandomPalette(): PalleteData {
-    const primary = this.generateVibrantColorForLightBackground()
-    const secondary = this.generateAnalogColor(primary)
-    const background = this.generateBackgroundColor(primary)
+  updatePallete(isDarkTheme: boolean, blockedColors: number[], colorMethod: number) {
+    // Copia la paleta actual
+    const currentColors = [...this.pallette().colors];
 
-    var pallette: PalleteData = {
-      colors: [
-        { name: 'Text', hex: '050706', optimalTextColor: 'black' },
-        { name: 'Background', hex: background, optimalTextColor: 'black' },
-        { name: 'Primary', hex: primary, optimalTextColor: 'black' },
-        { name: 'Secondary', hex: secondary, optimalTextColor: 'black' },
-      ],
-      isDark: false
-    };
-
-    pallette.colors.forEach(c => {
-      c.optimalTextColor = this.getOptimalTextColor(c.hex);
+    // Genera nuevos colores solo para los que no están bloqueados
+    const newColors = currentColors.map((color, idx) => {
+      if (blockedColors.includes(idx)) {
+        return color; // No modificar si está bloqueado
+      }
+      // Puedes expandir la lógica según el método de color
+      if (color.name === 'Text') {
+        return {
+          ...color,
+          hex: '050706',
+          optimalTextColor: 'white' as 'white'
+        };
+      }
+      if (color.name === 'Background') {
+        const hex = this.generateBackgroundColor(currentColors[2].hex);
+        return {
+          ...color,
+          hex,
+          optimalTextColor: this.getOptimalTextColor(hex)
+        };
+      }
+      if (color.name === 'Primary') {
+        const hex = this.generateVibrantColorForLightBackground();
+        return {
+          ...color,
+          hex,
+          optimalTextColor: this.getOptimalTextColor(hex)
+        };
+      }
+      if (color.name === 'secondary') {
+        const hex = this.generateMonochromaticColor(currentColors[2].hex); // Basado en Primary
+        return {
+          ...color,
+          hex,
+          optimalTextColor: this.getOptimalTextColor(hex)
+        };
+      }
+      return color;
     });
 
-    return pallette
+    this.pallette.set({
+      colors: newColors,
+      isDark: false
+    });
   }
 
   private generateVibrantColorForLightBackground(): string {
