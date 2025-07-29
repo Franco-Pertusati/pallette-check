@@ -9,12 +9,13 @@ export class PalletService {
 
   generateRandomPalette(): PalleteData {
     const primary = this.generateVibrantColorForLightBackground()
-    const secondary = this.generateMonochromaticColor(primary)
+    const secondary = this.generateAnalogColor(primary)
+    const background = this.generateBackgroundColor(primary)
 
     var pallette: PalleteData = {
       colors: [
         { name: 'Text', hex: '050706', optimalTextColor: 'black' },
-        { name: 'Background', hex: 'f8f3fb', optimalTextColor: 'black' },
+        { name: 'Background', hex: background, optimalTextColor: 'black' },
         { name: 'Primary', hex: primary, optimalTextColor: 'black' },
         { name: 'Secondary', hex: secondary, optimalTextColor: 'black' },
       ],
@@ -31,30 +32,29 @@ export class PalletService {
   private generateVibrantColorForLightBackground(): string {
     const hueOptions = [
       0,    // Rojo
-      120,  // Verde
-      240,  // Azul
       30,   // Naranja
-      280   // Púrpura
+      45,   // Amarillo dorado
+      60,   // Amarillo
+      90,   // Lima
+      120,  // Verde
+      150,  // Verde azulado
+      180,  // Cian
+      200,  // Azul cielo
+      220,  // Azul claro
+      240,  // Azul
+      260,  // Índigo
+      280,  // Púrpura
+      300,  // Magenta
+      330   // Rosa
     ];
 
     const hue = hueOptions[Math.floor(Math.random() * hueOptions.length)];
-    const saturation = 80 + Math.floor(Math.random() * 30); // 70-100%
-    const lightness = 40 + Math.floor(Math.random() * 30);  // 30-60%
+    const saturation = 70 + Math.floor(Math.random() * 30);
+    const lightness = 50 + Math.floor(Math.random() * 30);
 
     return this.hslToHex(hue, saturation, lightness);
   }
 
-  generateComplementaryColor(baseColor: string): string {
-    // Validar el color de entrada
-    if (!this.isValidHex(baseColor)) {
-      console.warn(`Invalid base color: ${baseColor}, using default`);
-      baseColor = '000000';
-    }
-
-    const hsl = this.hexToHsl(baseColor);
-    const complementaryHue = (hsl.h + 180) % 360;
-    return this.hslToHex(complementaryHue, hsl.s, hsl.l);
-  }
 
   generateMonochromaticColor(baseColor: string, saturationOffset: number = -30, lightnessOffset: number = 10): string {
     // Convertir el color base a HSL
@@ -68,21 +68,23 @@ export class PalletService {
     return this.hslToHex(hsl.h, newSaturation, newLightness);
   }
 
-  private generateLightColor(): string {
-    // Genera un color claro (con alto valor)
-    const hue = Math.floor(Math.random() * 360);
-    const saturation = Math.floor(Math.random() * 30);
-    const lightness = 85 + Math.floor(Math.random() * 15); // 85-100%
-
-    return this.hslToHex(hue, saturation, lightness);
+  generateAnalogColor(baseColor: string): string {
+    const hsl = this.hexToHsl(baseColor);
+    return this.hslToHex(hsl.h + 40, hsl.s, hsl.l);
   }
 
-  private generateDarkColor(): string {
-    const hue = Math.floor(Math.random() * 360);
-    const saturation = 30 + Math.floor(Math.random() * 70);
-    const lightness = Math.floor(Math.random() * 30); // 0-30%
+  private generateBackgroundColor(baseColor: string): string {
+    // Convertir el color base a HSL
+    const hsl = this.hexToHsl(baseColor);
 
-    return this.hslToHex(hue, saturation, lightness);
+    // Reducir la luminosidad para obtener un color más oscuro
+    let newLightness = 98;
+
+    // Mantener la saturación igual o aumentarla ligeramente para evitar colores apagados
+    let newSaturation = 100;
+
+    // Convertir de vuelta a HEX
+    return this.hslToHex(hsl.h, newSaturation, newLightness);
   }
 
   getOptimalTextColor(backgroundColor: string): 'black' | 'white' {
