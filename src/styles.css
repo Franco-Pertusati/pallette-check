@@ -1,1 +1,12 @@
 @import "tailwindcss";
+
+@theme {
+  --color-text: #050706;
+  --color-background: #fcf5ff;
+  --color-primary: #c36bef;
+  --color-secondary: #ef6cc3;
+}
+
+input:placeholder-shown {
+  color: rgb(114, 114, 114);
+}

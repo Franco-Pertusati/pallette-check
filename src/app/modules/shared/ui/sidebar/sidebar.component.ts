@@ -3,7 +3,7 @@ import { ButtonComponent } from "../button/button.component";
 
 @Component({
   selector: 'app-sidebar',
-  imports: [ButtonComponent],
+  imports: [],
   templateUrl: './sidebar.component.html'
 })
 export class SidebarComponent {

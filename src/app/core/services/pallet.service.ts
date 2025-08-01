@@ -8,9 +8,9 @@ import { ColorData } from '../interfaces/colorData';
 export class PalletService {
   pallette = signal<PalleteData>({
     colors: [
-      { name: 'Text', hex: '050706', optimalTextColor: 'white' },
-      { name: 'Background', hex: 'fcf5ff', optimalTextColor: 'black' },
-      { name: 'Primary', hex: 'c36bef', optimalTextColor: 'white' },
+      { name: 'text', hex: '050706', optimalTextColor: 'white' },
+      { name: 'background', hex: 'fcf5ff', optimalTextColor: 'black' },
+      { name: 'primary', hex: 'c36bef', optimalTextColor: 'white' },
       { name: 'secondary', hex: 'ef6cc3', optimalTextColor: 'white' },
     ],
     isDark: false
@@ -19,40 +19,52 @@ export class PalletService {
   constructor() { }
 
   updatePallete(isDarkTheme: boolean, blockedColors: number[], colorMethod: number) {
-    // Copia la paleta actual
     const currentColors = [...this.pallette().colors];
 
-    // Genera nuevos colores solo para los que no están bloqueados
+    let primaryHex = currentColors[2].hex;
+    if (!blockedColors.includes(2)) {
+      primaryHex = this.generateVibrantColorForLightBackground();
+    }
+
+    // Métodos posibles para el color secundario
+    const secondaryGenerators = [
+      this.generateAnalogColor.bind(this),
+      this.generateMonochromaticColor.bind(this)
+      // Puedes agregar más métodos aquí si tienes otros
+    ];
+    // Elegir uno al azar
+    const randomSecondaryGenerator = secondaryGenerators[
+      Math.floor(Math.random() * secondaryGenerators.length)
+    ];
+
     const newColors = currentColors.map((color, idx) => {
       if (blockedColors.includes(idx)) {
-        return color; // No modificar si está bloqueado
+        return color;
       }
-      // Puedes expandir la lógica según el método de color
-      if (color.name === 'Text') {
+      if (color.name === 'text') {
         return {
           ...color,
           hex: '050706',
           optimalTextColor: 'white' as 'white'
         };
       }
-      if (color.name === 'Background') {
-        const hex = this.generateBackgroundColor(currentColors[2].hex);
+      if (color.name === 'background') {
+        const hex = this.generateBackgroundColor(primaryHex);
         return {
           ...color,
           hex,
           optimalTextColor: this.getOptimalTextColor(hex)
         };
       }
-      if (color.name === 'Primary') {
-        const hex = this.generateVibrantColorForLightBackground();
+      if (color.name === 'primary') {
         return {
           ...color,
-          hex,
-          optimalTextColor: this.getOptimalTextColor(hex)
+          hex: primaryHex,
+          optimalTextColor: this.getOptimalTextColor(primaryHex)
         };
       }
       if (color.name === 'secondary') {
-        const hex = this.generateMonochromaticColor(currentColors[2].hex); // Basado en Primary
+        const hex = randomSecondaryGenerator(primaryHex);
         return {
           ...color,
           hex,
@@ -65,6 +77,17 @@ export class PalletService {
     this.pallette.set({
       colors: newColors,
       isDark: false
+    });
+
+    this.updateCssVariables();
+  }
+
+  updateCssVariables() {
+    const palette = this.pallette();
+    const root = document.documentElement;
+
+    palette.colors.forEach(color => {
+      root.style.setProperty(`--color-${color.name}`, `#${color.hex}`);
     });
   }
 
@@ -95,34 +118,32 @@ export class PalletService {
   }
 
 
-  generateMonochromaticColor(baseColor: string, saturationOffset: number = -30, lightnessOffset: number = 10): string {
-    // Convertir el color base a HSL
+  generateMonochromaticColor(baseColor: string): string {
     const hsl = this.hexToHsl(baseColor);
+    const sVar = Math.floor(Math.random() * (12 - (-12) + 1)) + (-12);
 
-    // Aplicar los offsets, asegurándose de que estén dentro de los límites válidos (0-100)
-    let newSaturation = Math.min(100, Math.max(0, hsl.s + saturationOffset));
-    let newLightness = Math.min(100, Math.max(0, hsl.l + lightnessOffset));
-
-    // Convertir de vuelta a HEX
-    return this.hslToHex(hsl.h, newSaturation, newLightness);
+    return this.hslToHex(hsl.h, hsl.s + sVar, hsl.l + sVar);
   }
 
   generateAnalogColor(baseColor: string): string {
     const hsl = this.hexToHsl(baseColor);
-    return this.hslToHex(hsl.h + 40, hsl.s, hsl.l);
+    // Aleatoriza el ángulo entre +20 y +60 grados respecto al color base
+    const angle = 20 + Math.floor(Math.random() * 41); // 20 a 60
+    const newHue = (hsl.h + angle) % 360;
+    // Opcional: variar un poco la saturación y luminosidad
+    const satVariation = Math.floor(Math.random() * 11) - 5; // -5 a +5
+    const lightVariation = Math.floor(Math.random() * 11) - 5; // -5 a +5
+    const newS = Math.max(0, Math.min(100, hsl.s + satVariation));
+    const newL = Math.max(0, Math.min(100, hsl.l + lightVariation));
+    return this.hslToHex(newHue, newS, newL);
   }
 
   private generateBackgroundColor(baseColor: string): string {
-    // Convertir el color base a HSL
     const hsl = this.hexToHsl(baseColor);
 
-    // Reducir la luminosidad para obtener un color más oscuro
-    let newLightness = 98;
-
-    // Mantener la saturación igual o aumentarla ligeramente para evitar colores apagados
+    let newLightness = Math.floor(Math.random() * 5) + 96;
     let newSaturation = 100;
 
-    // Convertir de vuelta a HEX
     return this.hslToHex(hsl.h, newSaturation, newLightness);
   }
 

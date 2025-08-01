@@ -19,6 +19,6 @@ export class PalletGeneratorComponent {
   }
 
   generateRandomPallette() {
-    this.palletteService.updatePallete(false, [2], 1)
+    this.palletteService.updatePallete(false, [], 1)
   }
 }

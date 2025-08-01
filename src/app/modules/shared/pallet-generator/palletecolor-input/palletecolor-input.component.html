@@ -3,43 +3,14 @@
 <div
   class="px-3 py-6 w-full flex justify-between rounded-xl"
   [style]="`background-color: #${colorData.hex};`"
-  (click)="isDialogOpen = !isDialogOpen"
 >
-  <span class="font-bold" [style]="`color: ${colorData.optimalTextColor}`">{{ colorData.name }}</span>
-  <span class="font-bold" [style]="`color: ${colorData.optimalTextColor}`">{{ colorData.hex }}</span>
+  <button>
+    <i class="material-icons-round" [style]="`color: ${colorData.optimalTextColor}`">lock</i>
+  </button>
+  <span class="font-bold" [style]="`color: ${colorData.optimalTextColor}`">{{
+    colorData.name | titlecase
+  }}</span>
+  <span class="font-bold" [style]="`color: ${colorData.optimalTextColor}`">{{
+    colorData.hex
+  }}</span>
 </div>
-
-@if (isDialogOpen) {
-  <app-dialog>
-    <div
-      class="flex flex-col gap-3 bg-neutral-50 rounded-3xl shadow-md border border-neutral-300 p-3"
-    >
-      <h2 class="font-bold text-xl">{{ colorData.name }}</h2>
-      <div
-        class="flex items-center border-neutral-300 border rounded-md gap-2 p-2 focus-within:border focus-within:border-neutral-600"
-      >
-        <div
-          class="p-3 rounded-md h-full focus-within:"
-          [style]="`background-color: #${colorData.hex};`"
-        ></div>
-        <input
-          type="text"
-          class="focus:outline-none w-full"
-          [value]="`#${colorData.hex}`"
-        />
-      </div>
-      <div class="flex justify-between">
-        <app-button
-          [label]="'Cancelar'"
-          [style]="'text'"
-          (click)="isDialogOpen = false"
-        />
-        <app-button
-          [label]="'Aplicar'"
-          [style]="'filled'"
-          (click)="isDialogOpen = false"
-        />
-      </div>
-    </div>
-  </app-dialog>
-}

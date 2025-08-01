@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { PalletService } from '../../../core/services/pallet.service';
 
 @Component({
   selector: 'app-components-showcase',
