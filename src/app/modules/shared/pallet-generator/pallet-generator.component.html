@@ -1,16 +1,27 @@
-<div class="p-3 flex flex-col gap-3 border-r border-neutral-300 h-full">
+<div
+  class="p-3 flex flex-col gap-3 border-r border-neutral-300 h-full"
+>
   <div class="w-full flex justify-between items-center">
     <h2 class="font-bold text-lg">Color pallete</h2>
     <app-button [icon]="'panorama_vertical'" />
   </div>
   <div class="flex flex-col gap-1">
     @for (color of pallette.colors; track $index) {
-      <app-palletecolor-input [color]="color" />
+      <app-palletecolor-input [color]="color">
+        <button (click)="toggleBlocked($index)">
+          <i
+            class="material-icons-round"
+            [style]="`color: ${color.optimalTextColor}`"
+          >
+            {{ color.blocked ? "lock" : "lock_open" }}
+          </i>
+        </button>
+      </app-palletecolor-input>
     }
   </div>
   <div class="flex gap-3 flex-row-reverse">
     <app-button [icon]="'repeat'" (click)="generateRandomPallette()" />
-    <app-button [label]="'Share'" [icon]="'share'" />
+    <app-button [icon]="'share'" [label]="'Share'" />
     <app-button [icon]="'star'" />
   </div>
 </div>

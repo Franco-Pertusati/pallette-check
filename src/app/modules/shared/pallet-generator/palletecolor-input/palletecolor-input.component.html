@@ -4,13 +4,13 @@
   class="px-3 py-6 w-full flex justify-between rounded-xl"
   [style]="`background-color: #${colorData.hex};`"
 >
-  <button>
-    <i class="material-icons-round" [style]="`color: ${colorData.optimalTextColor}`">lock</i>
-  </button>
-  <span class="font-bold" [style]="`color: ${colorData.optimalTextColor}`">{{
-    colorData.name | titlecase
-  }}</span>
-  <span class="font-bold" [style]="`color: ${colorData.optimalTextColor}`">{{
-    colorData.hex
-  }}</span>
+  <div class="flex gap-3 items-center">
+    <ng-content />
+    <span class="font-bold" [style]="`color: ${colorData.optimalTextColor}`">
+      {{ colorData.name | titlecase }}
+    </span>
+  </div>
+  <span class="font-bold" [style]="`color: ${colorData.optimalTextColor}`">
+    {{ colorData.hex }}
+  </span>
 </div>

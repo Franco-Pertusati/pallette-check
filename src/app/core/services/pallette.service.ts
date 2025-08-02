@@ -1,44 +1,54 @@
 import { Injectable, signal } from '@angular/core';
 import { PalleteData } from '../interfaces/palleteData';
-import { ColorData } from '../interfaces/colorData';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PalletService {
+export class PalletteService {
+  /**
+   * Signal holding the current palette data.
+   */
   pallette = signal<PalleteData>({
     colors: [
-      { name: 'text', hex: '050706', optimalTextColor: 'white' },
-      { name: 'background', hex: 'fcf5ff', optimalTextColor: 'black' },
-      { name: 'primary', hex: 'c36bef', optimalTextColor: 'white' },
-      { name: 'secondary', hex: 'ef6cc3', optimalTextColor: 'white' },
+      { name: 'text', hex: '050706', optimalTextColor: 'white', blocked: false },
+      { name: 'background', hex: 'fcf5ff', optimalTextColor: 'black', blocked: false },
+      { name: 'primary', hex: 'c36bef', optimalTextColor: 'white', blocked: false },
+      { name: 'secondary', hex: 'ef6cc3', optimalTextColor: 'white', blocked: false },
     ],
     isDark: false
   })
 
   constructor() { }
 
-  updatePallete(isDarkTheme: boolean, blockedColors: number[], colorMethod: number) {
+  /**
+   * Updates the palette with new colors.
+   * - Generates a new primary color if not blocked.
+   * - Generates a new secondary color using a random method.
+   * - Updates CSS variables after setting the new palette.
+   * @param isDarkTheme Whether the palette should be dark (currently ignored).
+   * @param colorMethod Color generation method (currently unused).
+   */
+  updatePallete(isDarkTheme: boolean, colorMethod: number) {
     const currentColors = [...this.pallette().colors];
 
     let primaryHex = currentColors[2].hex;
-    if (!blockedColors.includes(2)) {
+    if (!currentColors[2].blocked) {
       primaryHex = this.generateVibrantColorForLightBackground();
     }
 
-    // Métodos posibles para el color secundario
+    // Array of secondary color generation methods
     const secondaryGenerators = [
       this.generateAnalogColor.bind(this),
-      this.generateMonochromaticColor.bind(this)
-      // Puedes agregar más métodos aquí si tienes otros
+      this.generateMonochromaticColor.bind(this),
+      this.generateComplementary.bind(this)
     ];
-    // Elegir uno al azar
+    // Randomly select one method
     const randomSecondaryGenerator = secondaryGenerators[
       Math.floor(Math.random() * secondaryGenerators.length)
     ];
 
     const newColors = currentColors.map((color, idx) => {
-      if (blockedColors.includes(idx)) {
+      if (color.blocked) {
         return color;
       }
       if (color.name === 'text') {
@@ -82,6 +92,9 @@ export class PalletService {
     this.updateCssVariables();
   }
 
+  /**
+   * Updates the global CSS variables for the palette colors.
+   */
   updateCssVariables() {
     const palette = this.pallette();
     const root = document.documentElement;
@@ -91,23 +104,27 @@ export class PalletService {
     });
   }
 
+  /**
+   * Generates a vibrant color suitable for light backgrounds.
+   * @returns HEX color string
+   */
   private generateVibrantColorForLightBackground(): string {
     const hueOptions = [
-      0,    // Rojo
-      30,   // Naranja
-      45,   // Amarillo dorado
-      60,   // Amarillo
-      90,   // Lima
-      120,  // Verde
-      150,  // Verde azulado
-      180,  // Cian
-      200,  // Azul cielo
-      220,  // Azul claro
-      240,  // Azul
-      260,  // Índigo
-      280,  // Púrpura
+      0,    // Red
+      30,   // Orange
+      45,   // Golden yellow
+      60,   // Yellow
+      90,   // Lime
+      120,  // Green
+      150,  // Teal green
+      180,  // Cyan
+      200,  // Sky blue
+      220,  // Light blue
+      240,  // Blue
+      260,  // Indigo
+      280,  // Purple
       300,  // Magenta
-      330   // Rosa
+      330   // Pink
     ];
 
     const hue = hueOptions[Math.floor(Math.random() * hueOptions.length)];
@@ -117,7 +134,11 @@ export class PalletService {
     return this.hslToHex(hue, saturation, lightness);
   }
 
-
+  /**
+   * Generates a monochromatic color based on a base color.
+   * @param baseColor HEX color string
+   * @returns HEX color string
+   */
   generateMonochromaticColor(baseColor: string): string {
     const hsl = this.hexToHsl(baseColor);
     const sVar = Math.floor(Math.random() * (12 - (-12) + 1)) + (-12);
@@ -125,19 +146,42 @@ export class PalletService {
     return this.hslToHex(hsl.h, hsl.s + sVar, hsl.l + sVar);
   }
 
+    /**
+   * Generates a monochromatic color based on a base color.
+   * @param baseColor HEX color string
+   * @returns HEX color string
+   */
+  generateComplementary(baseColor: string): string {
+    const hsl = this.hexToHsl(baseColor);
+    const complementaryHue = (hsl.h + 180) % 360;
+
+    return this.hslToHex(complementaryHue, hsl.s, hsl.l);
+  }
+
+
+  /**
+   * Generates an analog color based on a base color.
+   * @param baseColor HEX color string
+   * @returns HEX color string
+   */
   generateAnalogColor(baseColor: string): string {
     const hsl = this.hexToHsl(baseColor);
-    // Aleatoriza el ángulo entre +20 y +60 grados respecto al color base
-    const angle = 20 + Math.floor(Math.random() * 41); // 20 a 60
+    // Randomize the angle between +20 and +60 degrees from the base color
+    const angle = 20 + Math.floor(Math.random() * 41); // 20 to 60
     const newHue = (hsl.h + angle) % 360;
-    // Opcional: variar un poco la saturación y luminosidad
-    const satVariation = Math.floor(Math.random() * 11) - 5; // -5 a +5
-    const lightVariation = Math.floor(Math.random() * 11) - 5; // -5 a +5
+    // Optionally vary saturation and lightness
+    const satVariation = Math.floor(Math.random() * 11) - 5; // -5 to +5
+    const lightVariation = Math.floor(Math.random() * 11) - 5; // -5 to +5
     const newS = Math.max(0, Math.min(100, hsl.s + satVariation));
     const newL = Math.max(0, Math.min(100, hsl.l + lightVariation));
     return this.hslToHex(newHue, newS, newL);
   }
 
+  /**
+   * Generates a background color based on a base color.
+   * @param baseColor HEX color string
+   * @returns HEX color string
+   */
   private generateBackgroundColor(baseColor: string): string {
     const hsl = this.hexToHsl(baseColor);
 
@@ -147,17 +191,22 @@ export class PalletService {
     return this.hslToHex(hsl.h, newSaturation, newLightness);
   }
 
+  /**
+   * Returns the optimal text color ('black' or 'white') for a given background color.
+   * @param backgroundColor HEX color string
+   * @returns 'black' or 'white'
+   */
   getOptimalTextColor(backgroundColor: string): 'black' | 'white' {
-    // Convertir el color de fondo a RGB
     const rgb = this.hexToRgb(backgroundColor);
-
-    // Calcular el brillo relativo según la fórmula WCAG
     const brightness = this.calculateRelativeLuminance(rgb);
-
-    // El umbral puede ajustarse, pero 0.5 es un buen punto medio
     return brightness > 0.5 ? 'black' : 'white';
   }
 
+  /**
+   * Converts a HEX color string to an RGB object.
+   * @param hex HEX color string
+   * @returns RGB object
+   */
   private hexToRgb(hex: string): { r: number; g: number; b: number } {
     const r = parseInt(hex.substring(0, 2), 16);
     const g = parseInt(hex.substring(2, 4), 16);
@@ -165,19 +214,26 @@ export class PalletService {
     return { r, g, b };
   }
 
-  // Método auxiliar: Calcular luminancia relativa (WCAG)
+  /**
+   * Calculates the relative luminance of an RGB color (WCAG formula).
+   * @param rgb RGB object
+   * @returns Relative luminance value (0-1)
+   */
   private calculateRelativeLuminance(rgb: { r: number; g: number; b: number }): number {
-    // Convertir valores RGB a espacio de color sRGB
     const [r, g, b] = [rgb.r / 255, rgb.g / 255, rgb.b / 255].map(c => {
       return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
     });
-
-    // Calcular luminancia relativa
     return 0.2126 * r + 0.7152 * g + 0.0722 * b;
   }
 
+  /**
+   * Converts HSL values to a HEX color string.
+   * @param h Hue (0-360)
+   * @param s Saturation (0-100)
+   * @param l Lightness (0-100)
+   * @returns HEX color string
+   */
   private hslToHex(h: number, s: number, l: number): string {
-    // Asegurar que los valores estén dentro de los rangos válidos
     h = Math.max(0, Math.min(360, h));
     s = Math.max(0, Math.min(100, s));
     l = Math.max(0, Math.min(100, l));
@@ -187,28 +243,29 @@ export class PalletService {
     const f = (n: number) => {
       const k = (n + h / 30) % 12;
       const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-      // Asegurar que el valor esté entre 0 y 255 y formatear correctamente
       const value = Math.max(0, Math.min(255, Math.round(255 * color)));
       return value.toString(16).padStart(2, '0');
     };
     const hex = `${f(0)}${f(8)}${f(4)}`;
 
-    // Validación adicional del resultado
     if (!/^[0-9a-f]{6}$/i.test(hex)) {
       console.warn(`Generated invalid HEX color: ${hex}, falling back to default`);
-      return '000000'; // Color negro como fallback
+      return '000000';
     }
 
     return hex;
   }
 
+  /**
+   * Converts a HEX color string to HSL values.
+   * @param hex HEX color string
+   * @returns HSL object
+   */
   private hexToHsl(hex: string): { h: number; s: number; l: number } {
-    // Convertir HEX a RGB
     let r = parseInt(hex.substring(0, 2), 16) / 255;
     let g = parseInt(hex.substring(2, 4), 16) / 255;
     let b = parseInt(hex.substring(4, 6), 16) / 255;
 
-    // Encontrar mínimo y máximo
     const max = Math.max(r, g, b);
     const min = Math.min(r, g, b);
 
@@ -236,6 +293,11 @@ export class PalletService {
     };
   }
 
+  /**
+   * Validates if a string is a valid HEX color.
+   * @param hex HEX color string
+   * @returns true if valid, false otherwise
+   */
   private isValidHex(hex: string): boolean {
     return /^[0-9a-f]{6}$/i.test(hex);
   }

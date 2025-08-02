@@ -1,8 +1,8 @@
-import { Component, effect } from '@angular/core';
+import { Component, effect, signal } from '@angular/core';
 import { ButtonComponent } from "../ui/button/button.component";
 import { PalletecolorInputComponent } from "./palletecolor-input/palletecolor-input.component";
 import { PalleteData } from '../../../core/interfaces/palleteData';
-import { PalletService } from '../../../core/services/pallet.service';
+import { PalletteService } from '../../../core/services/pallette.service';
 
 @Component({
   selector: 'app-pallet-generator',
@@ -12,13 +12,17 @@ import { PalletService } from '../../../core/services/pallet.service';
 export class PalletGeneratorComponent {
   pallette!: PalleteData;
 
-  constructor(private palletteService: PalletService) {
+  constructor(private palletteService: PalletteService) {
     effect(() => {
       this.pallette = this.palletteService.pallette();
     });
   }
 
   generateRandomPallette() {
-    this.palletteService.updatePallete(false, [], 1)
+    this.palletteService.updatePallete(false, 1)
+  }
+
+  toggleBlocked(index: number) {
+    this.pallette.colors[index].blocked = !this.pallette.colors[index].blocked;
   }
 }
