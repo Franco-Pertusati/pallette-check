@@ -3,14 +3,17 @@ import { ButtonComponent } from "../ui/button/button.component";
 import { PalletecolorInputComponent } from "./palletecolor-input/palletecolor-input.component";
 import { PalleteData } from '../../../core/interfaces/palleteData';
 import { PalletteService } from '../../../core/services/pallette.service';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-pallet-generator',
-  imports: [ButtonComponent, PalletecolorInputComponent],
-  templateUrl: './pallet-generator.component.html'
+  imports: [ButtonComponent, PalletecolorInputComponent, NgClass],
+  templateUrl: './pallet-generator.component.html',
+  styleUrl: './pallet-generator.component.css'
 })
 export class PalletGeneratorComponent {
   pallette!: PalleteData;
+  isOpen: boolean = true;
 
   constructor(private palletteService: PalletteService) {
     effect(() => {
@@ -24,5 +27,9 @@ export class PalletGeneratorComponent {
 
   toggleBlocked(index: number) {
     this.pallette.colors[index].blocked = !this.pallette.colors[index].blocked;
+  }
+
+  toggleState() {
+    this.isOpen = !this.isOpen
   }
 }

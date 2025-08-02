@@ -1,9 +1,21 @@
 <div
-  class="p-3 flex flex-col gap-3 border-r border-neutral-300 h-full"
+  class="p-3 bg-neutral-50 fixed flex h-fit w-full flex-col transition-transform gap-3 border-t border-neutral-300 dark:border-neutral-700 dark:bg-neutral-900"
+  [ngClass]="isOpen ? 'bottom-0' : 'closedPallette'"
 >
   <div class="w-full flex justify-between items-center">
-    <h2 class="font-bold text-lg">Color pallete</h2>
-    <app-button [icon]="'panorama_vertical'" />
+    <h2 class="font-bold text-lg text-center w-full dark:text-neutral-50">
+      Color pallete
+    </h2>
+    <div class="flex flex-row-reverse gap-3">
+      @if (!isOpen) {
+        <app-button [icon]="'repeat'" (click)="generateRandomPallette()" />
+      }
+      <app-button
+        (click)="toggleState()"
+        [icon]="isOpen ? 'keyboard_arrow_down' : 'keyboard_arrow_up'"
+        [style]="'text'"
+      />
+    </div>
   </div>
   <div class="flex flex-col gap-1">
     @for (color of pallette.colors; track $index) {
