@@ -22,7 +22,7 @@ export class PalletGeneratorComponent {
   }
 
   generateRandomPallette() {
-    this.palletteService.updatePallete(false, 1)
+    this.palletteService.updatePallete()
   }
 
   toggleBlocked(index: number) {

@@ -28,12 +28,12 @@ export class PalletteService {
    * @param isDarkTheme Whether the palette should be dark (currently ignored).
    * @param colorMethod Color generation method (currently unused).
    */
-  updatePallete(isDarkTheme: boolean, colorMethod: number) {
+  updatePallete() {
     const currentColors = [...this.pallette().colors];
 
     let primaryHex = currentColors[2].hex;
     if (!currentColors[2].blocked) {
-      primaryHex = this.generateVibrantColorForLightBackground();
+      primaryHex = this.generatePrimaryColor();
     }
 
     // Array of secondary color generation methods
@@ -52,10 +52,12 @@ export class PalletteService {
         return color;
       }
       if (color.name === 'text') {
+        const newHexValue = this.generateTextColor()
+        const newOptimalTxtColor = this.getOptimalTextColor(newHexValue)
         return {
           ...color,
-          hex: '050706',
-          optimalTextColor: 'white' as 'white'
+          hex: newHexValue,
+          optimalTextColor: newOptimalTxtColor
         };
       }
       if (color.name === 'background') {
@@ -105,10 +107,10 @@ export class PalletteService {
   }
 
   /**
-   * Generates a vibrant color suitable for light backgrounds.
+   * Generates a vibrant color.
    * @returns HEX color string
    */
-  private generateVibrantColorForLightBackground(): string {
+  private generatePrimaryColor(): string {
     const hueOptions = [
       0,    // Red
       30,   // Orange
@@ -143,14 +145,22 @@ export class PalletteService {
     const hsl = this.hexToHsl(baseColor);
     const sVar = Math.floor(Math.random() * (12 - (-12) + 1)) + (-12);
 
-    return this.hslToHex(hsl.h, hsl.s + sVar, hsl.l + sVar);
+    // Ensure a minimum lightness difference of 15 units
+    let newL = hsl.l + sVar;
+    if (Math.abs(newL - hsl.l) < 15) {
+      newL = hsl.l + (newL > hsl.l ? 15 : -15);
+    }
+    // Clamp lightness between 0 and 100
+    newL = Math.max(0, Math.min(100, newL));
+
+    return this.hslToHex(hsl.h, hsl.s + sVar, newL);
   }
 
-    /**
-   * Generates a monochromatic color based on a base color.
-   * @param baseColor HEX color string
-   * @returns HEX color string
-   */
+  /**
+ * Generates a monochromatic color based on a base color.
+ * @param baseColor HEX color string
+ * @returns HEX color string
+ */
   generateComplementary(baseColor: string): string {
     const hsl = this.hexToHsl(baseColor);
     const complementaryHue = (hsl.h + 180) % 360;
@@ -185,10 +195,36 @@ export class PalletteService {
   private generateBackgroundColor(baseColor: string): string {
     const hsl = this.hexToHsl(baseColor);
 
-    let newLightness = Math.floor(Math.random() * 5) + 96;
-    let newSaturation = 100;
+    const isDarkTheme = this.getCurrentTheme();
+
+    const randomInt = (min: number, max: number) =>
+      Math.floor(Math.random() * (max - min + 1)) + min;
+
+    const newLightness = isDarkTheme
+      ? randomInt(10, 15) // oscuro: 10–15%
+      : randomInt(96, 100); // claro: 96–100%
+
+    const newSaturation = isDarkTheme
+      ? randomInt(20, 30) // oscuro: 20–30%
+      : randomInt(96, 100); // claro: 96–100%
 
     return this.hslToHex(hsl.h, newSaturation, newLightness);
+  }
+
+  /**
+   * Generates a neutral text color HEX value based on the theme.
+   * @param isDark If true, generates a light neutral color; otherwise, a dark neutral color.
+   * @returns HEX color string
+   */
+  generateTextColor(): string {
+    // For light theme, generate a dark neutral (near black)
+    // For dark theme, generate a light neutral (near white)
+    const lightness = this.getCurrentTheme()
+      ? 90 + Math.floor(Math.random() * 6) // 90-95% lightness for light text
+      : 5 + Math.floor(Math.random() * 6); // 5-10% lightness for dark text
+    const hue = 0; // Neutral gray
+    const saturation = 0; // No color, pure gray
+    return this.hslToHex(hue, saturation, lightness);
   }
 
   /**
@@ -300,5 +336,9 @@ export class PalletteService {
    */
   private isValidHex(hex: string): boolean {
     return /^[0-9a-f]{6}$/i.test(hex);
+  }
+
+  getCurrentTheme(): boolean {
+    return localStorage.getItem('theme') === 'dark';
   }
 }

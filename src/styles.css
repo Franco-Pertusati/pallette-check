@@ -12,3 +12,7 @@
 input:placeholder-shown {
   color: rgb(114, 114, 114);
 }
+
+* {
+  box-sizing: border-box;
+}
