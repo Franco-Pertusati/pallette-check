@@ -1,6 +1,6 @@
 import { Component, input, model, output, EventEmitter } from '@angular/core';
-import { ColorData } from '../../../../core/interfaces/colorData';
 import { CommonModule } from '@angular/common';
+import { ColorData } from '../../../../core/interfaces/colorData';
 
 @Component({
   selector: 'app-palletecolor-input',

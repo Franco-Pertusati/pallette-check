@@ -5,7 +5,9 @@
 @theme {
   --color-text: #e8e8e8;
   --color-background: #2e1e1e;
+
   --color-primary: #f77878;
+
   --color-primary-50: #fde7e7;
   --color-primary-100: #fccfcf;
   --color-primary-200: #f99f9f;
@@ -17,7 +19,9 @@
   --color-primary-800: #5e0808;
   --color-primary-900: #460606;
   --color-primary-950: #2f0404;
+
   --color-secondary: #78f7f7;
+
   --color-secondary-50: #e7fdfd;
   --color-secondary-100: #cffcfc;
   --color-secondary-200: #9ff9f9;

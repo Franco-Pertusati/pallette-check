@@ -1,0 +1,21 @@
+<div class="flex flex-col gap-3">
+  <div class="flex flex-col gap-1">
+    @for (color of pallette.colors; track $index) {
+      <app-palletecolor-input [color]="color">
+        <button (click)="toggleBlocked($index)">
+          <i
+            class="material-icons-round"
+            [style]="`color: ${color.optimalTextColor}`"
+          >
+            {{ color.blocked ? "lock" : "lock_open" }}
+          </i>
+        </button>
+      </app-palletecolor-input>
+    }
+  </div>
+  <div class="flex gap-3 flex-row-reverse">
+    <app-button [style]="'border'" [icon]="'repeat'" (click)="generateRandomPallette()" />
+    <app-button [style]="'border'" [icon]="'share'" [label]="'Share'" />
+    <app-button [style]="'border'" [icon]="'star'" />
+  </div>
+</div>

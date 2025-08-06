@@ -1,0 +1,27 @@
+<div
+  class="flex fixed w-screen"
+  [ngClass]="isOpen ? 'bottom-0' : 'closedPallette'"
+>
+  <div
+    class="p-3 bg-background flex h-fit w-full flex-col gap-3 shadow-xl border-t border-neutral-300"
+  >
+    <div class="w-full flex justify-between items-center">
+      <div class="flex items-center gap-3 mx-auto">
+        <app-button [style]="'border'" [label]="'Pallette'" />
+        <app-button [style]="'text'" [label]="'Shades'" />
+        <app-button [style]="'text'" [label]="'Methods'" />
+      </div>
+      <div class="flex flex-row-reverse gap-3">
+        <app-button
+          (click)="toggleState()"
+          [icon]="isOpen ? 'keyboard_arrow_down' : 'keyboard_arrow_up'"
+          [style]="'text'"
+        />
+      </div>
+    </div>
+    @if (isOpen) {
+      <!-- <app-pallette-output /> -->
+      <app-shades-output />
+    }
+  </div>
+</div>

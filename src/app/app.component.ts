@@ -3,7 +3,7 @@ import { ComponentsShowcaseComponent } from "./modules/shared/components-showcas
 import { NavbarComponent } from "./modules/shared/ui/navbar/navbar.component";
 import { SidebarComponent } from "./modules/shared/ui/sidebar/sidebar.component";
 import { OutputSidebarComponent } from "./modules/shared/output-sidebar/output-sidebar.component";
-import { PalletGeneratorComponent } from "./modules/shared/pallet-generator/pallet-generator.component";
+import { PalletGeneratorComponent } from './modules/pallet-generator/pallet-generator.component';
 
 @Component({
   selector: 'app-root',
