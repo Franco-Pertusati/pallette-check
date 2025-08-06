@@ -21,6 +21,10 @@ export class PalletGeneratorComponent {
     });
   }
 
+  ngOnInit() {
+    this.palletteService.updatePallete()
+  }
+
   generateRandomPallette() {
     this.palletteService.updatePallete()
   }

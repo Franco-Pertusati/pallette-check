@@ -1,5 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { PalleteData } from '../interfaces/palleteData';
+import { ColorData } from '../interfaces/colorData';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +13,8 @@ export class PalletteService {
     colors: [
       { name: 'text', hex: '050706', optimalTextColor: 'white', blocked: false },
       { name: 'background', hex: 'fcf5ff', optimalTextColor: 'black', blocked: false },
-      { name: 'primary', hex: 'c36bef', optimalTextColor: 'white', blocked: false },
-      { name: 'secondary', hex: 'ef6cc3', optimalTextColor: 'white', blocked: false },
+      { name: 'primary', hex: 'ef6cc3', optimalTextColor: 'white', blocked: false, shades: [] },
+      { name: 'secondary', hex: 'ef6cc3', optimalTextColor: 'white', blocked: false, shades: [] },
     ],
     isDark: false
   })
@@ -72,7 +73,8 @@ export class PalletteService {
         return {
           ...color,
           hex: primaryHex,
-          optimalTextColor: this.getOptimalTextColor(primaryHex)
+          optimalTextColor: this.getOptimalTextColor(primaryHex),
+          shades: this.generateTailwindPalette(primaryHex)
         };
       }
       if (color.name === 'secondary') {
@@ -80,7 +82,8 @@ export class PalletteService {
         return {
           ...color,
           hex,
-          optimalTextColor: this.getOptimalTextColor(hex)
+          optimalTextColor: this.getOptimalTextColor(hex),
+          shades: this.generateTailwindPalette(hex)
         };
       }
       return color;
@@ -103,6 +106,12 @@ export class PalletteService {
 
     palette.colors.forEach(color => {
       root.style.setProperty(`--color-${color.name}`, `#${color.hex}`);
+
+      if (color.shades) {
+        color.shades.forEach(shade => {
+          root.style.setProperty(`--color-${color.name}-${shade.name}`, `${shade.hex}`);
+        });
+      }
     });
   }
 
@@ -110,23 +119,46 @@ export class PalletteService {
    * Generates a vibrant color.
    * @returns HEX color string
    */
+  /**
+   * Generates a random primary color in hexadecimal format.
+   *
+   * The color is selected by randomly choosing a hue from a predefined set of primary and secondary hues,
+   * then randomly generating saturation and lightness values within specified ranges.
+   * The resulting HSL color is converted to its hexadecimal representation.
+   *
+   * @returns {string} The generated color as a hex string (e.g., "#ff5733").
+   */
   private generatePrimaryColor(): string {
     const hueOptions = [
-      0,    // Red
-      30,   // Orange
-      45,   // Golden yellow
-      60,   // Yellow
-      90,   // Lime
-      120,  // Green
-      150,  // Teal green
-      180,  // Cyan
-      200,  // Sky blue
-      220,  // Light blue
-      240,  // Blue
-      260,  // Indigo
-      280,  // Purple
+      0,    // Rojo
+      15,   // Rojo anaranjado
+      25,   // Naranja
+      35,   // Naranja dorado
+      45,   // Amarillo dorado
+      55,   // Amarillo cálido
+      60,   // Amarillo
+      75,   // Amarillo verdoso
+      90,   // Lima
+      105,  // Verde lima
+      120,  // Verde
+      135,  // Verde bosque
+      150,  // Verde azulado
+      165,  // Verde agua
+      180,  // Cian
+      195,  // Azul verdoso
+      210,  // Azul cielo
+      220,  // Azul claro
+      230,  // Azul pastel
+      240,  // Azul
+      250,  // Azul profundo
+      260,  // Índigo
+      270,  // Violeta
+      280,  // Púrpura
+      290,  // Púrpura magenta
       300,  // Magenta
-      330   // Pink
+      315,  // Rosa magenta
+      330,  // Rosa
+      345   // Rojo rosado
     ];
 
     const hue = hueOptions[Math.floor(Math.random() * hueOptions.length)];
@@ -261,6 +293,54 @@ export class PalletteService {
     });
     return 0.2126 * r + 0.7152 * g + 0.0722 * b;
   }
+
+  generateTailwindPalette(hex: string): ColorData[] {
+    hex = hex.replace(/^#/, '').toLowerCase();
+    const baseHSL = this.hexToHsl(hex);
+
+    const lightnessMap = {
+      '50': 95,
+      '100': 90,
+      '200': 80,
+      '300': 70,
+      '400': 60,
+      '500': 50,
+      '600': 40,
+      '700': 30,
+      '800': 20,
+      '900': 15,
+      '950': 10,
+    };
+
+    let closestKey = '500';
+    let minDiff = Infinity;
+    for (const [key, l] of Object.entries(lightnessMap)) {
+      const diff = Math.abs(baseHSL.l - l);
+      if (diff < minDiff) {
+        minDiff = diff;
+        closestKey = key;
+      }
+    }
+
+    const result: ColorData[] = [];
+    const baseL = baseHSL.l;
+
+    for (const [key, targetL] of Object.entries(lightnessMap)) {
+      const delta = targetL - baseL;
+      const adjustedL = baseHSL.l + delta;
+      const adjustedS = baseHSL.s > 20 ? baseHSL.s - Math.abs(delta) * 0.1 : baseHSL.s;
+      const hexValue = `${this.hslToHex(baseHSL.h, adjustedS, adjustedL)}`;
+      result.push({
+        name: key,
+        hex: `#${hexValue}`,
+        optimalTextColor: this.getOptimalTextColor(hexValue),
+        blocked: false
+      });
+    }
+
+    return result;
+  }
+
 
   /**
    * Converts HSL values to a HEX color string.
