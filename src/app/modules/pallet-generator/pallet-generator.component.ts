@@ -6,7 +6,7 @@ import { ShadesOutputComponent } from "./shades-output/shades-output.component";
 
 @Component({
   selector: 'app-pallet-generator',
-  imports: [NgClass, ButtonComponent, PalletteOutputComponent, ShadesOutputComponent],
+  imports: [NgClass, ButtonComponent, ShadesOutputComponent, PalletteOutputComponent],
   templateUrl: './pallet-generator.component.html',
   styleUrl: './pallet-generator.component.css'
 })

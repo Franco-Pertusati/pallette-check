@@ -23,7 +23,7 @@ export class ButtonComponent {
     const baseClass = 'flex gap-1.5 py-1.5 rounded-xl hover:cursor-pointer text-gray-800 dark:text-neutral-50';
     const styleClass = {
       text: 'bg-transparent hover:bg-gray-200 dark:hover:bg-neutral-800',
-      filled: 'bg-primary text-background',
+      filled: 'bg-neutral-900 text-background text-neutral-50 dark:bg-neutral-50 dark:text-neutral-900',
       border: 'border border-gray-800',
     }[this.style()];
 

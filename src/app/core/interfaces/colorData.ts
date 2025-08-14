@@ -3,7 +3,7 @@ export interface ColorData {
   name: string
   optimalTextColor: 'white' | 'black'
   blocked: boolean
-  shades?: ColorData[]
+  shades: ColorData[]
 }
 
 export interface PalletteData {

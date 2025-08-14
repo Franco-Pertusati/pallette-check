@@ -11,8 +11,8 @@ export class PalletteService {
    */
   pallette = signal<PalleteData>({
     colors: [
-      { name: 'text', hex: '050706', optimalTextColor: 'white', blocked: false },
-      { name: 'background', hex: 'fcf5ff', optimalTextColor: 'black', blocked: false },
+      { name: 'text', hex: '050706', optimalTextColor: 'white', blocked: false, shades: [] },
+      { name: 'background', hex: 'fcf5ff', optimalTextColor: 'black', blocked: false, shades: [] },
       { name: 'primary', hex: 'ef6cc3', optimalTextColor: 'white', blocked: false, shades: [] },
       { name: 'secondary', hex: 'ef6cc3', optimalTextColor: 'white', blocked: false, shades: [] },
     ],
@@ -334,7 +334,8 @@ export class PalletteService {
         name: key,
         hex: `#${hexValue}`,
         optimalTextColor: this.getOptimalTextColor(hexValue),
-        blocked: false
+        blocked: false,
+        shades: []
       });
     }
 

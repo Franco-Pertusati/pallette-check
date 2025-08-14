@@ -1,9 +1,7 @@
-<div
-  class="flex fixed w-screen"
-  [ngClass]="isOpen ? 'bottom-0' : 'closedPallette'"
->
+<div class="flex fixed w-screen p-3 bottom-0">
   <div
-    class="p-3 bg-background flex h-fit w-full flex-col gap-3 shadow-xl border-t border-neutral-300"
+    class="p-3 flex h-fit mx-auto flex-col gap-3 shadow-xl border rounded-2xl border-neutral-300 bg-neutral-100 dark:bg-neutral-800 dark:border-neutral-700"
+    [ngClass]="isOpen? 'w-full' : 'w-fit'"
   >
     <div class="w-full flex justify-between items-center">
       <div class="flex items-center gap-3 mx-auto">
@@ -20,8 +18,8 @@
       </div>
     </div>
     @if (isOpen) {
-      <!-- <app-pallette-output /> -->
-      <app-shades-output />
+      <app-pallette-output />
+      <!-- <app-shades-output /> -->
     }
   </div>
 </div>
