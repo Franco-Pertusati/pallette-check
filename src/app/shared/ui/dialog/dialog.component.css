@@ -1,0 +1,39 @@
+.dialogBackground {
+  height: 100vh;
+  width: 100vw;
+  display: grid;
+  place-items: center;
+  backdrop-filter: blur(4px);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  animation: fadeIn .2s ease-in forwards;
+}
+
+.closeBtnContainer {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+.dialogCard {
+  width: 100%;
+  padding: 24px;
+}
+
+@keyframes fadeIn {
+  from {
+    background-color: hsla(0, 0%, 17%, 0);
+  }
+  to {
+    background-color: hsla(0, 0%, 17%, .3);
+  }
+}
+
+@media(min-width: 768px) {
+  .dialogCard {
+    width: fit-content;
+    min-width: 424px;
+  }
+}

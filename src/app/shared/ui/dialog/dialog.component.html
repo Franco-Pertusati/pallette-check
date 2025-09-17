@@ -1,0 +1,8 @@
+<div class="dialogBackground" (click)="closeDialog()">
+  <div class="dialogCard appearGrowing relative" (click)="stopPropagation($event)">
+    <ng-content />
+    <div class="closeBtnContainer">
+      <app-button [icon]="'close'" (click)="closeDialog()" />
+    </div>
+  </div>
+</div>

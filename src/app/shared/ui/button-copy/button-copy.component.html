@@ -1,0 +1,15 @@
+@let btn = { style : style(), extraCss: extraCss(), label : label(),
+notifications : notifications(), showLabel : showLabel(), showIcon :
+showIcon()};
+
+<button
+  (click)="copyContent()"
+  [ngClass]="!btn.showLabel || !btn.label ? 'p0' : 'px6 py3'"
+  [class]="`btn-${btn.style} btn ${btn.extraCss}`"
+>
+  @if (btn.showIcon && icon) {
+  <i class="material-symbols-rounded">{{ icon }}</i>
+  } @if (btn.showLabel && btn.label) {
+  <span>{{ btn.label }}</span>
+  }
+</button>

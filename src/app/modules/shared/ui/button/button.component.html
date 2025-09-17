@@ -1,8 +1,0 @@
-<button [class]="getClasses()" [ngClass]="!showLabel() || !label()? 'px-1.5' : 'px-3'">
-  @if (showIcon() && icon()) {
-    <i class="material-icons-round">{{ icon() }}</i>
-  }
-  @if (showLabel() && label()) {
-    <span>{{ label() }}</span>
-  }
-</button>

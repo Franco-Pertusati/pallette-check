@@ -1,0 +1,26 @@
+@let btn = { style : style(), extraCss: extraCss(), label : label(), icon :
+icon(), notifications : notifications(), showLabel : showLabel(), showIcon :
+showIcon(), state : state()};
+
+<button
+  [class]="`btn-${btn.style} ${btn.extraCss}`"
+  [ngClass]="!btn.showLabel || !btn.label ? 'p3' : 'px6 py3'"
+>
+  @if (btn.showIcon && btn.icon) {
+  <i class="material-symbols-rounded" [ngClass]="btn.state === 'loading'? 'spinInfinite' : ''">
+    {{
+      btn.state === "default"
+        ? btn.icon
+        : btn.state === "loading"
+        ? "progress_activity"
+        : btn.state === "error"
+        ? "refresh"
+        : btn.state === "success"
+        ? "check"
+        : "help_outline"
+    }}</i
+  >
+  } @if (btn.showLabel && btn.label) {
+  <span>{{ btn.label }}</span>
+  }
+</button>

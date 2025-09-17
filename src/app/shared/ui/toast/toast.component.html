@@ -1,0 +1,19 @@
+@let t = toast();
+
+<div class="toast flex flexCol gap3 card p6">
+  <div class="flex gap3 itemsCenter">
+    <i class="material-symbols-rounded">
+      {{ t.icon }}
+    </i>
+    <span class="boldText">
+      {{ t.title }}
+    </span>
+  </div>
+  @if (t.message) {
+  <div>
+    <span>
+      {{ t.message }}
+    </span>
+  </div>
+  }
+</div>

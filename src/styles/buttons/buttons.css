@@ -1,0 +1,55 @@
+.btn-filled {
+  background-color: var(--text);
+}
+
+.btn-filled:hover {
+  background-color: var(--text-muted);
+}
+
+.btn-filled * {
+  color: var(--bg-dark);
+}
+
+.btn-sidebar {
+  padding-left: var(--spacing-3);
+  width: 100%;
+}
+
+.btn-sidebar span {
+  padding: 0 36px;
+}
+
+.btn-border {
+  border: solid 1px var(--border);
+}
+
+.btn-form {
+  width: 100%;
+  background-color: var(--text);
+  justify-content: center;
+  padding: 14px 0;
+  border-radius: var(--spacing-6);
+}
+
+.btn-form:hover {
+  background-color: var(--text-muted);
+}
+
+.btn-form * {
+  color: var(--bg-dark);
+}
+
+.btn-cta {
+  background-color: var(--text);
+  padding: var(--spacing-6) 24px;
+}
+
+.btn-cta span {
+  color: var(--bg);
+  font-weight: bold;
+}
+
+.btn-link:hover * {
+  color: var(--text);
+  text-decoration: underline;
+}

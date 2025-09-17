@@ -1,14 +1,17 @@
-import { Component } from '@angular/core';
-import { ComponentsShowcaseComponent } from "./modules/shared/components-showcase/components-showcase.component";
-import { NavbarComponent } from "./modules/shared/ui/navbar/navbar.component";
-import { SidebarComponent } from "./modules/shared/ui/sidebar/sidebar.component";
-import { OutputSidebarComponent } from "./modules/shared/output-sidebar/output-sidebar.component";
-import { PalletGeneratorComponent } from './modules/pallet-generator/pallet-generator.component';
+import { Component, inject } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { DialogComponent } from "./shared/ui/dialog/dialog.component";
+import { DialogService } from './core/services/dialog.service';
+import { CommonModule } from '@angular/common';
+import { ToastListComponent } from "./shared/ui/toast-list/toast-list.component";
+import { ToastService } from './core/services/toast.service';
 
 @Component({
   selector: 'app-root',
-  imports: [ComponentsShowcaseComponent, NavbarComponent, PalletGeneratorComponent],
+  imports: [RouterOutlet, DialogComponent, CommonModule, ToastListComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {}
+export class AppComponent {
+  dialog = inject(DialogService);
+}

@@ -1,0 +1,5 @@
+<div class="toastContainer">
+  @for (t of toasts.toastList(); track $index) {
+  <app-toast [toast]="t" />
+  }
+</div>
