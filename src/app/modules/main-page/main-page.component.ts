@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { NavbarComponent } from "./sections/navbar/navbar.component";
-import { CurrentColorComponent } from "./sections/current-color/current-color.component";
-import { ColorInputComponent } from "./sections/color-input/color-input.component";
+import { SidebarComponent } from "./sections/sidebar/sidebar.component";
+import { MainContentComponent } from "./sections/main-content/main-content.component";
+import { DialogComponent } from "../../shared/ui/dialog/dialog.component";
 
 @Component({
   selector: 'app-main-page',
-  imports: [NavbarComponent, CurrentColorComponent, ColorInputComponent],
+  imports: [NavbarComponent, SidebarComponent, MainContentComponent],
   templateUrl: './main-page.component.html',
 })
 export class MainPageComponent {
