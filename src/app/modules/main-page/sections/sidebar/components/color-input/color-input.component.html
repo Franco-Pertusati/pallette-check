@@ -1,0 +1,20 @@
+<div class="flex flex-col gap-3">
+  <div
+    class="px-1.5 shadow-lg md:shadow-none relative rounded-xl form-control bg-neutral flex items-center border border-border focus-within:outline"
+  >
+    <input
+      data-v-cb200df0=""
+      type="color"
+      class="absolute top-1/2 transform -translate-y-1/2 w-5 h-5 rounded-full border-none left-3 cursor-pointer"
+      style="appearance: none"
+    />
+    <input
+      type="text"
+      placeholder="Hexcode"
+      class="px-4 pl-10 bg-transparent rounded-xl py-3 w-full focus:outline-none"
+    />
+    <app-button [icon]="'lock'" />
+  </div>
+  <app-button [icon]="'shuffle'" [label]="'Generate Random'" [style]="'border'" [classList]="'w-full py-3 gap-3'" />
+  <app-button [icon]="'add  '" [label]="'Add a new color'" [style]="'filled'" [classList]="'w-full py-3 gap-3'" />
+</div>

@@ -13,6 +13,14 @@
 
   --color-text: hsl(0, 0%, 10%);
   --color-muted: hsl(0, 0%, 25%);
+
+  --color-primary-700: hsl(2, 83%, 40%);
+  --color-primary-600: hsl(5, 85%, 48%);
+  --color-primary-500: hsl(10, 89%, 53%);
+  --color-primary: hsl(12, 90%, 60%);
+  --color-primary-300: hsl(16, 91%, 72%);
+  --color-primary-200: hsl(18, 91%, 83%);
+  --color-primary-100: hsl(19, 95%, 92%);
 }
 
 .dark {

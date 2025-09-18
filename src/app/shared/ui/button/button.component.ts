@@ -15,12 +15,12 @@ export class ButtonComponent {
   showIcon = input<boolean>(true);
 
   styleMap: Record<string, string> = {
-    text: 'bg-dark',
+    text: 'bg-transparent',
     filled: 'bg-text text-dark',
-    border: 'bg-red-600 text-white hover:bg-red-700',
+    border: 'border border-light',
   };
 
-  baseClasses = `inline-flex items-center justify-center rounded-xl font-medium focus:outline-none`;
+  baseClasses = `inline-flex items-center justify-center gap-1.5 rounded-xl font-medium cursor-pointer`;
 
   get classes(): string {
     const variant = this.styleMap[this.style()] ?? '';
