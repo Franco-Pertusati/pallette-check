@@ -1,1 +1,35 @@
 @import "tailwindcss";
+
+@theme {
+  --color-*: initial;
+
+  --color-dark: hsl(0, 0%, 100%);
+  --color-neutral: hsl(0, 0%, 95%);
+  --color-light: hsl(0, 0%, 90%);
+
+  --color-border: hsl(0, 0%, 85%);
+  --color-highline: hsl(0, 0%, 85%);
+  --color-bottomline: hsl(0, 0%, 85%);
+
+  --color-text: hsl(0, 0%, 10%);
+  --color-muted: hsl(0, 0%, 25%);
+}
+
+.dark {
+  --color-dark: hsl(0, 0%, 5%);
+  --color-neutral: hsl(0, 0%, 10%);
+  --color-light: hsl(0, 0%, 15%);
+
+  --color-border: hsl(0, 0%, 20%);
+  --color-highline: hsl(0, 0%, 24%);
+  --color-bottomline: hsl(0, 0%, 14%);
+
+  --color-text: hsl(0, 0%, 90%);
+  --color-muted: hsl(0, 0%, 75%);
+}
+
+@layer base {
+  body {
+    @apply text-[var(--color-text)];
+  }
+}

@@ -9,15 +9,13 @@ type Theme = 'light' | 'dark';
 export class ThemeService {
   private readonly storageKey = 'app-theme';
 
-  // Signal con el tema actual
   private themeSignal = signal<Theme>(this.getInitialTheme());
-
   theme = this.themeSignal.asReadonly();
 
   constructor() {
     effect(() => {
       const theme = this.themeSignal();
-      document.documentElement.setAttribute('data-theme', theme);
+      document.documentElement.classList.toggle('dark', theme === 'dark');
       localStorage.setItem(this.storageKey, theme);
     });
   }
@@ -31,11 +29,9 @@ export class ThemeService {
   }
 
   private getInitialTheme(): Theme {
-    // 1. Leer de localStorage
     const stored = localStorage.getItem(this.storageKey) as Theme | null;
     if (stored === 'light' || stored === 'dark') return stored;
 
-    // 2. Leer preferencia del dispositivo
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     return prefersDark ? 'dark' : 'light';
   }
