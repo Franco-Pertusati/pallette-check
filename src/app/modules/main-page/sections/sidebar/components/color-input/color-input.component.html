@@ -1,6 +1,6 @@
-<div class="flex flex-col gap-3">
+<div class="flex flex-col gap-4 items-center">
   <div
-    class="px-1.5 shadow-lg md:shadow-none relative rounded-xl form-control bg-neutral flex items-center border border-border focus-within:outline"
+    class="px-1.5 relative rounded-xl form-control bg-neutral flex items-center border border-border focus-within:outline"
   >
     <input
       data-v-cb200df0=""
@@ -13,8 +13,34 @@
       placeholder="Hexcode"
       class="px-4 pl-10 bg-transparent rounded-xl py-3 w-full focus:outline-none"
     />
-    <app-button [icon]="'lock'" />
+    <div class="hidden">
+      <app-button [icon]="'lock'" />
+    </div>
+    <div class="flex gap-2 py-2 h-fit md:hidden">
+      <app-button
+        [icon]="'shuffle'"
+        [style]="'border'"
+        [classList]="'w-full gap-3'"
+      />
+      <app-button
+        [icon]="'add  '"
+        [style]="'filled'"
+        [classList]="'w-full gap-3'"
+      />
+    </div>
   </div>
-  <app-button [icon]="'shuffle'" [label]="'Generate Random'" [style]="'border'" [classList]="'w-full py-3 gap-3'" />
-  <app-button [icon]="'add  '" [label]="'Add a new color'" [style]="'filled'" [classList]="'w-full py-3 gap-3'" />
+  <div class="gap-4 h-fit hidden md:flex flex-col w-full">
+    <app-button
+      [icon]="'shuffle'"
+      [style]="'border'"
+      [classList]="'w-full gap-3 py-3'"
+      [label]="'Random color'"
+    />
+    <app-button
+      [icon]="'add  '"
+      [style]="'filled'"
+      [classList]="'w-full gap-3 py-3'"
+      [label]="'Add color'"
+    />
+  </div>
 </div>

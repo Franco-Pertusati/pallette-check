@@ -25,6 +25,8 @@
   --color-primary-800: #444d89;
   --color-primary-900: #3a436e;
   --color-primary-950: #272b44;
+
+  --container-7xl: 1360px
 }
 
 .dark {
@@ -44,4 +46,8 @@
   body {
     @apply text-[var(--color-text)];
   }
+}
+
+button {
+  cursor: pointer;
 }

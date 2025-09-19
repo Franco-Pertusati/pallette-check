@@ -1,13 +1,33 @@
 <div class="border-b border-light h-14 fixed w-screen flex justify-center">
-  <nav class="py-2 px-6 flex gap-3 items-center w-full max-w-7xl">
-    <div
-      class="w-9 h-9 font-bold rounded-xl grid place-items-center bg-text"
-    >
+  <nav class="py-2 px-6 flex gap-6 items-center w-full max-w-7xl">
+    <div class="w-9 h-9 font-bold rounded-xl grid place-items-center bg-text">
       <span class="text-sm text-dark">PG</span>
     </div>
-    <a href="#" class="text-lg">Generate</a>
-    <a href="#" class="text-lg">My Pallettes</a>
-    <app-theme-toggle-btn [className]="'ml-auto'" />
-    <app-button [label]="'Donate'" [style]="'filled'" />
+    <a href="#" class="text-lg hidden md:block">Generate</a>
+    <a href="#" class="text-lg hidden md:block">My Pallettes</a>
+    <a href="#" class="text-lg hidden md:block">Help</a>
+
+    <div class="md:hidden flex relative">
+      <app-button
+        [label]="'More'"
+        [icon]="'keyboard_arrow_down'"
+        [classList]="'text-lg'"
+        (click)="menuOpen = !menuOpen"
+      />
+      @if (menuOpen) {
+        <div
+          class="border border-border bg-neutral rounded-xl py-3 px-6 flex flex-col gap-2 z-100 absolute -bottom-36 shadow-xl"
+        >
+          <a href="#" class="text-lg">Generate</a>
+          <a href="#" class="text-lg text-nowrap">My Pallettes</a>
+          <a href="#" class="text-lg">Help</a>
+        </div>
+      }
+    </div>
+
+    <app-theme-toggle-btn
+      [className]="'ml-auto'"
+      [classList]="'border border-border rounded-full ml-auto'"
+    />
   </nav>
 </div>
