@@ -1,0 +1,66 @@
+{
+  "color": "#fa277c",
+  "uiColors": {
+    "--color-deco-50": "#fef1f7",
+    "--color-deco-100": "#fee5f1",
+    "--color-deco-200": "#ffcbe4",
+    "--color-deco-300": "#ffa1cc",
+    "--color-deco-400": "#ff67a9",
+    "--color-deco-500": "#fa277c",
+    "--color-deco-600": "#eb1762",
+    "--color-deco-700": "#cd0949",
+    "--color-deco-800": "#a90b3d",
+    "--color-deco-900": "#8c0f36",
+    "--color-deco-950": "#56011b"
+  },
+  "myIterations": [
+    {
+      "description": "Primera iteracion de claude",
+      "palette": {
+        "--color-deco-50": "#ff00e5",
+        "--color-deco-100": "#ff00d6",
+        "--color-deco-200": "#ff00be",
+        "--color-deco-300": "#ff009b",
+        "--color-deco-400": "#ff007a",
+        "--color-deco-500": "#ff0061",
+        "--color-deco-600": "#ff0047",
+        "--color-deco-700": "#d2002f",
+        "--color-deco-800": "#850017",
+        "--color-deco-900": "#4e0009",
+        "--color-deco-950": "#260002"
+      }
+    },
+    {
+      "description": "Segunda iteracion de claude",
+      "palette": {
+        "--color-deco-50": "#ffb7c5",
+        "--color-deco-100": "#ffafc1",
+        "--color-deco-200": "#ff529a",
+        "--color-deco-300": "#ff006b",
+        "--color-deco-400": "#ff0054",
+        "--color-deco-500": "#ff0042",
+        "--color-deco-600": "#ff0041",
+        "--color-deco-700": "#ff0041",
+        "--color-deco-800": "#c1002e",
+        "--color-deco-900": "#67001e",
+        "--color-deco-950": "#41000b"
+      }
+    },
+    {
+      "description": "tercera iteracion de claude",
+      "palette": {
+        "--color-deco-50": "#ffeeeb",
+        "--color-deco-100": "#ffe4e1",
+        "--color-deco-200": "#ffc1cb",
+        "--color-deco-300": "#fd81aa",
+        "--color-deco-400": "#f11086",
+        "--color-deco-500": "#b70964",
+        "--color-deco-600": "#960951",
+        "--color-deco-700": "#73033d",
+        "--color-deco-800": "#500429",
+        "--color-deco-900": "#3c021d",
+        "--color-deco-950": "#1b000a"
+      }
+    }
+  ]
+}

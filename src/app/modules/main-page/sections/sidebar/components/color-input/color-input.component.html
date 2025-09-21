@@ -1,6 +1,6 @@
-<div class="flex flex-col gap-4 items-center">
+<div class="flex flex-col gap-4 items-center w-full">
   <div
-    class="px-1.5 relative rounded-xl form-control bg-neutral flex items-center border border-border focus-within:outline"
+    class="px-1.5 relative rounded-xl form-control bg-neutral flex items-center border border-border focus-within:outline w-full"
   >
     <input
       data-v-cb200df0=""
@@ -12,6 +12,7 @@
       type="text"
       placeholder="Hexcode"
       class="px-4 pl-10 bg-transparent rounded-xl py-3 w-full focus:outline-none"
+      (keyup.enter)="onEnter($event)"
     />
     <div class="hidden">
       <app-button [icon]="'lock'" />

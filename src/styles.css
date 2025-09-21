@@ -26,7 +26,19 @@
   --color-primary-900: #3a436e;
   --color-primary-950: #272b44;
 
-  --container-7xl: 1360px
+  --color-deco-100: #dedede;
+  --color-deco-200: #bebebd;
+  --color-deco-300: #9e9e9e;
+  --color-deco-400: #808080;
+  --color-deco-50: #eeeeee;
+  --color-deco-500: #636363;
+  --color-deco-600: #484848;
+  --color-deco-700: #2e2e2e;
+  --color-deco-800: #161616;
+  --color-deco-900: #060606;
+  --color-deco-950: #020202;
+
+  --container-7xl: 1424px
 }
 
 .dark {
