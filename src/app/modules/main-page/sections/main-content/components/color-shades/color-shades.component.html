@@ -1,45 +1,29 @@
 <div class="flex flex-col gap-2">
-  <div class="flex gap-4 items-center">
-    <div class="grow flex items-center gap-2">
-      <span>Color name</span>
-      <app-button [icon]="'check_box'" />
+  <div class="flex flex-wrap gap-2 items-center justify-between">
+    <div class="flex gap-2 items-center">
+      <input
+        type="text"
+        [value]="color().name"
+        class="focus:outline-0 w-fit border border-border rounded-xl p-1.5 bg-neutral"
+      />
+      <input
+        type="text"
+        [value]="color().shades[6].value"
+        class="focus:outline-0 border border-border rounded-xl p-1.5 w-20 bg-neutral"
+      />
+      <app-button [icon]="'repeat'" [style]="'filled'" />
     </div>
-    <span>Export</span>
+    <div class="flex gap-2">
+      <app-button [icon]="'contrast'" [style]="'border'" />
+      <app-button [icon]="'upgrade'" [style]="'border'" />
+    </div>
   </div>
   <div class="flex gap-1.5 overflow-hidden">
-    <div
-      class="h-24 grid place-items-center bg-primary-50 grow rounded-xl font-bold"
-    ></div>
-    <div
-      class="h-24 grid place-items-center bg-primary-100 grow rounded-xl font-bold"
-    ></div>
-    <div
-      class="h-24 grid place-items-center bg-primary-200 grow rounded-xl font-bold"
-    ></div>
-    <div
-      class="h-24 grid place-items-center bg-primary-300 grow rounded-xl font-bold"
-    ></div>
-    <div
-      class="h-24 grid place-items-center bg-primary-400 grow rounded-xl font-bold"
-    ></div>
-    <div
-      class="h-24 grid place-items-center bg-primary-500 grow rounded-xl font-bold"
-    ></div>
-    <div
-      class="h-24 grid place-items-center bg-primary-600 grow rounded-xl font-bold"
-    ></div>
-    <div
-      class="h-24 grid place-items-center bg-primary-700 grow rounded-xl font-bold"
-    ></div>
-    <div
-      class="h-24 grid place-items-center bg-primary-800 grow rounded-xl font-bold"
-    ></div>
-    <div
-      class="h-24 grid place-items-center bg-primary-900 grow rounded-xl font-bold"
-    >
+    @for (shade of color().shades; track $index) {
       <div
-        class="h-24 grid place-items-center bg-primary-950 grow rounded-xl font-bold"
+        [style]="`background-color: ${shade.value};`"
+        class="h-24 w-18 grow rounded-xl"
       ></div>
-    </div>
+    }
   </div>
 </div>

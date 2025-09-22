@@ -6,7 +6,7 @@ import { FooterComponent } from "./components/footer/footer.component";
 
 @Component({
   selector: 'app-main-content',
-  imports: [PalletteDataComponent, ColorShadesComponent, ComponentsShowcaseComponent, FooterComponent],
+  imports: [PalletteDataComponent, ComponentsShowcaseComponent, FooterComponent],
   templateUrl: './main-content.component.html'
 })
 export class MainContentComponent {

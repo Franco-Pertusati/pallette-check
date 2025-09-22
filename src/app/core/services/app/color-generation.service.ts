@@ -23,48 +23,53 @@ export class colorGenerationService {
   /**
    * Genera una paleta completa basada en un color hex
    */
-  generatePalette(hexColor: string, colorName: string): Record<string, string> {
-    // Convertir hex a OKLCH
-    const baseOklch = this.hexToOklch(hexColor);
+generatePalette(hexColor: string, colorName: string): { key: string; value: string }[] {
+  // Convertir hex a OKLCH
+  const baseOklch = this.hexToOklch(hexColor);
 
-    // Determinar posición del color en la escala
-    const basePosition = this.findColorPosition(baseOklch.l);
+  // Determinar posición del color en la escala
+  const basePosition = this.findColorPosition(baseOklch.l);
 
-    // Calcular chroma de referencia para posición 500
-    const baseConfig = this.scaleConfig[basePosition as keyof typeof this.scaleConfig];
-    const referenceChroma = (baseOklch.c / baseConfig.chromaFactor) * this.scaleConfig[500].chromaFactor;
+  // Calcular chroma de referencia para posición 500
+  const baseConfig = this.scaleConfig[basePosition as keyof typeof this.scaleConfig];
+  const referenceChroma = (baseOklch.c / baseConfig.chromaFactor) * this.scaleConfig[500].chromaFactor;
 
-    // Generar todas las variantes
-    const palette: Record<string, string> = {};
+  // Generar todas las variantes
+  const paletteArray: { key: string; value: string }[] = [];
 
-    for (const step of this.scaleSteps) {
-      const config = this.scaleConfig[step as keyof typeof this.scaleConfig];
+  for (const step of this.scaleSteps) {
+    const config = this.scaleConfig[step as keyof typeof this.scaleConfig];
 
-      // Calcular chroma ajustado
-      let adjustedChroma = referenceChroma * config.chromaFactor;
+    // Calcular chroma ajustado
+    let adjustedChroma = referenceChroma * config.chromaFactor;
 
-      // Aplicar límites de chroma más restrictivos
-      if (step <= 100) {
-        adjustedChroma = Math.min(adjustedChroma, 0.02);
-      } else if (step <= 200) {
-        adjustedChroma = Math.min(adjustedChroma, 0.06);
-      } else if (step >= 900) {
-        adjustedChroma = Math.min(adjustedChroma, 0.08);
-      }
-
-      const variantOklch = {
-        l: config.lightness,
-        c: adjustedChroma,
-        h: baseOklch.h
-      };
-
-      // Convertir de vuelta a hex
-      const hexValue = this.oklchToHex(variantOklch.l, variantOklch.c, variantOklch.h);
-      palette[`--color-${colorName}-${step}`] = hexValue;
+    // Aplicar límites de chroma más restrictivos
+    if (step <= 100) {
+      adjustedChroma = Math.min(adjustedChroma, 0.02);
+    } else if (step <= 200) {
+      adjustedChroma = Math.min(adjustedChroma, 0.06);
+    } else if (step >= 900) {
+      adjustedChroma = Math.min(adjustedChroma, 0.08);
     }
 
-    return palette;
+    const variantOklch = {
+      l: config.lightness,
+      c: adjustedChroma,
+      h: baseOklch.h
+    };
+
+    // Convertir de vuelta a hex
+    const hexValue = this.oklchToHex(variantOklch.l, variantOklch.c, variantOklch.h);
+
+    // Agregar al array en lugar del objeto
+    paletteArray.push({
+      key: `--color-${colorName}-${step}`,
+      value: hexValue
+    });
   }
+
+  return paletteArray;
+}
 
   /**
    * Convierte un color HEX a OKLCH
