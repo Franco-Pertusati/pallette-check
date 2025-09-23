@@ -16,13 +16,15 @@ export class PaletteService {
     return palettes[index] || null;
   });
 
-  createPalette(name: string, initialColor?: { hex: string, colorName: string }): Palette {
+  createPalette(name: string, initialColor?: { hex: string, colorName: string }): void {
     const newPalette: Palette = {
       name: name.trim() || 'New Palette',
-      colors: []
+      colors: [],
+      id: `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+      createdAt: Date.now(),
+      updatedAt: Date.now()
     };
 
-    // Si se proporciona un color inicial, agregarlo a la paleta
     if (initialColor) {
       const generatedShades = this.colorGeneration.generatePalette(
         initialColor.hex,
@@ -32,16 +34,9 @@ export class PaletteService {
       newPalette.colors.push({
         name: initialColor.colorName,
         shades: generatedShades,
-        id: `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
-        createdAt: Date.now(),
-        updatedAt: Date.now()
       });
     }
-
-    // Actualizar el signal con la nueva paleta
     this.palettes.update(currentPalettes => [...currentPalettes, newPalette]);
-
-    return newPalette;
   }
 
   // duplicatePalette(paletteId: string): Palette {}
@@ -54,8 +49,41 @@ export class PaletteService {
   // getAllPalettes(): Palette[] { }
 
 
-  addColorToPalette(paletteIndex: number, hexColor: string, colorName: string): void { }
-  removeColorFromPalette(paletteIndex: number, colorIndex: number): void { }
-  updateColorInPalette(paletteIndex: number, colorIndex: number, newHex: string): void { }
-  renameColorInPalette(paletteIndex: number, colorIndex: number, newName: string): void { }
+  addColorToPalette(hexColor: string, colorName: string): void {
+    const currentPalettes = this.palettes();
+    const currentIndex = this.currentPaletteIndex();
+
+    // Verificar que existe una paleta actual
+    if (currentIndex < 0 || !currentPalettes[currentIndex]) {
+      console.warn('No hay paleta actual seleccionada');
+      return;
+    }
+
+    // Generar los shades del nuevo color
+    const generatedShades = this.colorGeneration.generatePalette(hexColor, colorName);
+
+    const newColor: PaletteColor = {
+      name: colorName.trim() || 'Unnamed Color',
+      shades: generatedShades
+    };
+
+    // Actualizar la paleta agregando el nuevo color
+    this.palettes.update(palettes => {
+      const updatedPalettes = [...palettes];
+      const targetPalette = { ...updatedPalettes[currentIndex] };
+
+      // Agregar el nuevo color y actualizar timestamp
+      targetPalette.colors = [...targetPalette.colors, newColor];
+      targetPalette.updatedAt = Date.now();
+
+      updatedPalettes[currentIndex] = targetPalette;
+      return updatedPalettes;
+    });
+
+    console.log(this.currentPalette())
+  }
+
+  removeColorFromPalette(colorIndex: number): void { }
+  updateColorInPalette(colorIndex: number, newHex: string): void { }
+  renameColorInPalette(colorIndex: number, newName: string): void { }
 }

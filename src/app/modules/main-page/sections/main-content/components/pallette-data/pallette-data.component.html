@@ -4,10 +4,21 @@
       <span class="text-lg font-bold">
         {{ paletteService.currentPalette().name }}
       </span>
-      <app-button
-        [style]="'border'"
-        [icon]="'bookmark'"
-      />
+      <app-button [style]="'border'" [icon]="'bookmark'" />
+      <div class="flex gap-2">
+        @for (color of colors?.colors; track $index) {
+          <div
+            class="h-9 w-9 rounded-xl"
+            [style]="`background-color: ${color.shades[4].value};`"
+          ></div>
+        }
+        <app-button
+          [style]="'filled'"
+          [icon]="'add'"
+          [label]="'Add color'"
+          (click)="addNewColor()"
+        />
+      </div>
     </div>
     <div class="flex gap-2">
       <app-button
