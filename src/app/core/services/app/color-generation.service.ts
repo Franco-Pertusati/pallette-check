@@ -5,8 +5,8 @@ import { Injectable } from '@angular/core';
 })
 export class colorGenerationService {
   private readonly scaleConfig = {
-    50: { lightness: 0.97, chromaFactor: 0.05 },
-    100: { lightness: 0.94, chromaFactor: 0.10 },
+    50: { lightness: 0.95, chromaFactor: 0.05 },
+    100: { lightness: 0.92, chromaFactor: 0.10 },
     200: { lightness: 0.87, chromaFactor: 0.25 },
     300: { lightness: 0.76, chromaFactor: 0.45 },
     400: { lightness: 0.64, chromaFactor: 0.70 },
@@ -18,58 +18,96 @@ export class colorGenerationService {
     950: { lightness: 0.15, chromaFactor: 0.25 }
   };
 
+  private readonly defautColors = {
+    red: "#ef4444",
+    orange: "#f97316",
+    amber: "#f59e0b",
+    yellow: "#eab308",
+    lime: "#84cc16",
+    green: "#22c55e",
+    emerald: "#10b981",
+    teal: "#14b8a6",
+    cyan: "#06b6d4",
+    sky: "#0ea5e9",
+    blue: "#3b82f6",
+    indigo: "#6366f1",
+    violet: "#8b5cf6",
+    purple: "#a855f7",
+    fuchsia: "#d946ef",
+    pink: "#ec4899",
+    rose: "#f43f5e"
+  };
+
   private readonly scaleSteps = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
 
   /**
-   * Genera una paleta completa basada en un color hex
+   * Genera shades basado en un color hex
    */
-generatePalette(hexColor: string, colorName: string): { key: string; value: string }[] {
-  // Convertir hex a OKLCH
-  const baseOklch = this.hexToOklch(hexColor);
+  generateShades( colorName: string, hexColor: string): { key: string; value: string }[] {
+    // Convertir hex a OKLCH
+    const baseOklch = this.hexToOklch(hexColor);
 
-  // Determinar posición del color en la escala
-  const basePosition = this.findColorPosition(baseOklch.l);
+    // Determinar posición del color en la escala
+    const basePosition = this.findColorPosition(baseOklch.l);
 
-  // Calcular chroma de referencia para posición 500
-  const baseConfig = this.scaleConfig[basePosition as keyof typeof this.scaleConfig];
-  const referenceChroma = (baseOklch.c / baseConfig.chromaFactor) * this.scaleConfig[500].chromaFactor;
+    // Calcular chroma de referencia para posición 500
+    const baseConfig = this.scaleConfig[basePosition as keyof typeof this.scaleConfig];
+    const referenceChroma = (baseOklch.c / baseConfig.chromaFactor) * this.scaleConfig[500].chromaFactor;
 
-  // Generar todas las variantes
-  const paletteArray: { key: string; value: string }[] = [];
+    // Generar todas las variantes
+    const paletteArray: { key: string; value: string }[] = [];
 
-  for (const step of this.scaleSteps) {
-    const config = this.scaleConfig[step as keyof typeof this.scaleConfig];
+    for (const step of this.scaleSteps) {
+      const config = this.scaleConfig[step as keyof typeof this.scaleConfig];
 
-    // Calcular chroma ajustado
-    let adjustedChroma = referenceChroma * config.chromaFactor;
+      // Calcular chroma ajustado
+      let adjustedChroma = referenceChroma * config.chromaFactor;
 
-    // Aplicar límites de chroma más restrictivos
-    if (step <= 100) {
-      adjustedChroma = Math.min(adjustedChroma, 0.02);
-    } else if (step <= 200) {
-      adjustedChroma = Math.min(adjustedChroma, 0.06);
-    } else if (step >= 900) {
-      adjustedChroma = Math.min(adjustedChroma, 0.08);
+      // Aplicar límites de chroma más restrictivos
+      if (step <= 100) {
+        adjustedChroma = Math.min(adjustedChroma, 0.02);
+      } else if (step <= 200) {
+        adjustedChroma = Math.min(adjustedChroma, 0.06);
+      } else if (step >= 900) {
+        adjustedChroma = Math.min(adjustedChroma, 0.08);
+      }
+
+      const variantOklch = {
+        l: config.lightness,
+        c: adjustedChroma,
+        h: baseOklch.h
+      };
+
+      // Convertir de vuelta a hex
+      const hexValue = this.oklchToHex(variantOklch.l, variantOklch.c, variantOklch.h);
+
+      // Agregar al array en lugar del objeto
+      paletteArray.push({
+        key: `--color-${colorName}-${step}`,
+        value: hexValue
+      });
     }
 
-    const variantOklch = {
-      l: config.lightness,
-      c: adjustedChroma,
-      h: baseOklch.h
-    };
-
-    // Convertir de vuelta a hex
-    const hexValue = this.oklchToHex(variantOklch.l, variantOklch.c, variantOklch.h);
-
-    // Agregar al array en lugar del objeto
-    paletteArray.push({
-      key: `--color-${colorName}-${step}`,
-      value: hexValue
-    });
+    return paletteArray;
   }
 
-  return paletteArray;
-}
+  /**
+   * Genera un color aleatorio de los colores por defecto
+   * @returns {Object} Objeto con el nombre del color y su valor hexadecimal
+   */
+  generateRandomColor(): { name: string; hex: string } {
+    const colorNames = Object.keys(this.defautColors);
+    const randomIndex = Math.floor(Math.random() * colorNames.length);
+    const randomColorName = colorNames[randomIndex];
+    const randomColorHex = this.defautColors[randomColorName as keyof typeof this.defautColors];
+
+    const capitalizedColorName = randomColorName.charAt(0).toUpperCase() + randomColorName.slice(1);
+
+    return {
+      name: capitalizedColorName,
+      hex: randomColorHex
+    };
+  }
 
   /**
    * Convierte un color HEX a OKLCH

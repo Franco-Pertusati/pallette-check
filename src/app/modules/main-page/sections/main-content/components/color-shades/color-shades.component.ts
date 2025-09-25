@@ -2,11 +2,10 @@ import { Component, computed, inject, input } from '@angular/core';
 import { ButtonComponent } from "../../../../../../shared/ui/button/button.component";
 import { PaletteService } from '../../../../../../core/services/app/palette.service';
 import { PaletteColor } from '../../../../../../core/interfaces/palette';
-import { ColorInputComponent } from "../../../sidebar/components/color-input/color-input.component";
 
 @Component({
   selector: 'app-color-shades',
-  imports: [ButtonComponent, ColorInputComponent],
+  imports: [ButtonComponent],
   templateUrl: './color-shades.component.html'
 })
 export class ColorShadesComponent {

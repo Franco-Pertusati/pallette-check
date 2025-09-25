@@ -16,7 +16,7 @@ export class PaletteService {
     return palettes[index] || null;
   });
 
-  createPalette(name: string, initialColor?: { hex: string, colorName: string }): void {
+  createPalette(name: string): void {
     const newPalette: Palette = {
       name: name.trim() || 'New Palette',
       colors: [],
@@ -25,18 +25,21 @@ export class PaletteService {
       updatedAt: Date.now()
     };
 
+    const initialColor = this.colorGeneration.generateRandomColor()
+
     if (initialColor) {
-      const generatedShades = this.colorGeneration.generatePalette(
-        initialColor.hex,
-        initialColor.colorName
+      const generatedShades = this.colorGeneration.generateShades(
+        initialColor.name,
+        initialColor.hex
       );
 
       newPalette.colors.push({
-        name: initialColor.colorName,
+        name: initialColor.name,
         shades: generatedShades,
       });
     }
     this.palettes.update(currentPalettes => [...currentPalettes, newPalette]);
+    console.log(this.currentPalette())
   }
 
   // duplicatePalette(paletteId: string): Palette {}
@@ -49,7 +52,7 @@ export class PaletteService {
   // getAllPalettes(): Palette[] { }
 
 
-  addColorToPalette(hexColor: string, colorName: string): void {
+  addColorToPalette(): void {
     const currentPalettes = this.palettes();
     const currentIndex = this.currentPaletteIndex();
 
@@ -59,11 +62,16 @@ export class PaletteService {
       return;
     }
 
-    // Generar los shades del nuevo color
-    const generatedShades = this.colorGeneration.generatePalette(hexColor, colorName);
+    // Verificar si no tiene 3 colores
+    if (this.currentPalette().colors.length > 2) {
+      return
+    }
+
+    const randomColor = this.colorGeneration.generateRandomColor()
+    const generatedShades = this.colorGeneration.generateShades(randomColor.name, randomColor.hex);
 
     const newColor: PaletteColor = {
-      name: colorName.trim() || 'Unnamed Color',
+      name: randomColor.name,
       shades: generatedShades
     };
 
