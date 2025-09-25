@@ -1,20 +1,33 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, linkedSignal, signal } from '@angular/core';
 import { Palette, PaletteColor } from '../../interfaces/palette';
 import { colorGenerationService } from './color-generation.service';
+import { CssMagnamentService } from './css-magnament.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PaletteService {
   colorGeneration = inject(colorGenerationService)
+  cssMagnament = inject(CssMagnamentService)
+
   palettes = signal<Palette[]>([]);
   currentPaletteIndex = signal<number>(0);
 
-  currentPalette = computed(() => {
+  currentPalette = linkedSignal(() => {
     const palettes = this.palettes();
     const index = this.currentPaletteIndex();
     return palettes[index] || null;
   });
+
+
+  constructor() {
+    effect(() => {
+      const palette = this.currentPalette();
+      if (palette && palette.colors.length > 0) {
+        this.cssMagnament.applyCSSVariables(this.currentPalette());
+      }
+    });
+  }
 
   createPalette(name: string): void {
     const newPalette: Palette = {
@@ -39,7 +52,6 @@ export class PaletteService {
       });
     }
     this.palettes.update(currentPalettes => [...currentPalettes, newPalette]);
-    console.log(this.currentPalette())
   }
 
   // duplicatePalette(paletteId: string): Palette {}
@@ -87,8 +99,6 @@ export class PaletteService {
       updatedPalettes[currentIndex] = targetPalette;
       return updatedPalettes;
     });
-
-    console.log(this.currentPalette())
   }
 
   removeColorFromPalette(colorIndex: number): void { }
