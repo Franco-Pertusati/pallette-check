@@ -54,7 +54,6 @@ export class PaletteService {
     this.palettes.update(currentPalettes => [...currentPalettes, newPalette]);
   }
 
-  // duplicatePalette(paletteId: string): Palette {}
   deletePalette(paletteId: string): void { }
   renamePalette(paletteId: string, newName: string): void { }
 
@@ -101,7 +100,151 @@ export class PaletteService {
     });
   }
 
-  removeColorFromPalette(colorIndex: number): void { }
-  updateColorInPalette(colorIndex: number, newHex: string): void { }
-  renameColorInPalette(colorIndex: number, newName: string): void { }
+  /**
+   * Remueve un color de la paleta actual
+   * @param colorIndex Índice del color a remover (0, 1 o 2)
+   */
+  removeColorFromPalette(colorIndex: number): void {
+    const currentPalettes = this.palettes();
+    const currentIndex = this.currentPaletteIndex();
+
+    // Verificar que existe una paleta actual
+    if (currentIndex < 0 || !currentPalettes[currentIndex]) {
+      console.warn('No hay paleta actual seleccionada');
+      return;
+    }
+
+    const currentPalette = currentPalettes[currentIndex];
+
+    // Verificar que el índice es válido
+    if (colorIndex < 0 || colorIndex >= currentPalette.colors.length) {
+      console.warn(`Índice de color inválido: ${colorIndex}. La paleta tiene ${currentPalette.colors.length} colores`);
+      return;
+    }
+
+    // Verificar que no sea el único color
+    if (currentPalette.colors.length === 1) {
+      console.warn('No se puede eliminar el único color de la paleta');
+      return;
+    }
+
+    // Obtener el nombre del color antes de eliminarlo
+    const colorName = currentPalette.colors[colorIndex].name;
+
+    // Actualizar la paleta removiendo el color
+    this.palettes.update(palettes => {
+      const updatedPalettes = [...palettes];
+      const targetPalette = { ...updatedPalettes[currentIndex] };
+
+      // Remover el color del array y actualizar timestamp
+      targetPalette.colors = targetPalette.colors.filter((_, index) => index !== colorIndex);
+      targetPalette.updatedAt = Date.now();
+
+      updatedPalettes[currentIndex] = targetPalette;
+      return updatedPalettes;
+    });
+
+    console.log(`Color removido: ${colorName} (índice ${colorIndex})`);
+  }
+
+  /**
+   * Actualiza el nombre de un color en la paleta actual
+   * @param colorIndex Índice del color a renombrar (0, 1 o 2)
+   * @param newName Nuevo nombre del color
+   */
+  renameColorInPalette(colorIndex: number, newName: string): void {
+    const currentPalettes = this.palettes();
+    const currentIndex = this.currentPaletteIndex();
+
+    // Verificar que existe una paleta actual
+    if (currentIndex < 0 || !currentPalettes[currentIndex]) {
+      console.warn('No hay paleta actual seleccionada');
+      return;
+    }
+
+    const currentPalette = currentPalettes[currentIndex];
+
+    // Verificar que el índice es válido
+    if (colorIndex < 0 || colorIndex >= currentPalette.colors.length) {
+      console.warn(`Índice de color inválido: ${colorIndex}. La paleta tiene ${currentPalette.colors.length} colores`);
+      return;
+    }
+
+    const trimmedName = newName.trim();
+    if (!trimmedName) {
+      console.warn('El nombre del color no puede estar vacío');
+      return;
+    }
+
+    // Actualizar solo el nombre del color
+    this.palettes.update(palettes => {
+      const updatedPalettes = [...palettes];
+      const targetPalette = { ...updatedPalettes[currentIndex] };
+
+      targetPalette.colors = [...targetPalette.colors];
+      targetPalette.colors[colorIndex] = {
+        ...targetPalette.colors[colorIndex],
+        name: trimmedName
+      };
+      targetPalette.updatedAt = Date.now();
+
+      updatedPalettes[currentIndex] = targetPalette;
+      return updatedPalettes;
+    });
+
+    console.log(`Color renombrado en índice ${colorIndex}: ${trimmedName}`);
+  }
+
+  /**
+   * Actualiza solo el valor hexadecimal de un color en la paleta actual
+   * @param colorIndex Índice del color a modificar (0, 1 o 2)
+   * @param newHex Nuevo valor hexadecimal del color
+   */
+  updateColorHex(colorIndex: number, newHex: string): void {
+    const currentPalettes = this.palettes();
+    const currentIndex = this.currentPaletteIndex();
+
+    // Verificar que existe una paleta actual
+    if (currentIndex < 0 || !currentPalettes[currentIndex]) {
+      console.warn('No hay paleta actual seleccionada');
+      return;
+    }
+
+    const currentPalette = currentPalettes[currentIndex];
+
+    // Verificar que el índice es válido
+    if (colorIndex < 0 || colorIndex >= currentPalette.colors.length) {
+      console.warn(`Índice de color inválido: ${colorIndex}. La paleta tiene ${currentPalette.colors.length} colores`);
+      return;
+    }
+
+    const currentColor = currentPalette.colors[colorIndex];
+
+    // Generar nuevos shades con el nuevo color manteniendo el nombre actual
+    const newShades = this.colorGeneration.generateShades(currentColor.name, newHex);
+
+    // Actualizar la paleta con el nuevo color
+    this.palettes.update(palettes => {
+      const updatedPalettes = [...palettes];
+      const targetPalette = { ...updatedPalettes[currentIndex] };
+
+      // Crear el color actualizado manteniendo el nombre
+      const updatedColor = {
+        name: currentColor.name,
+        shades: newShades
+      };
+
+      // Reemplazar el color en el índice especificado
+      targetPalette.colors = [...targetPalette.colors];
+      targetPalette.colors[colorIndex] = updatedColor;
+      targetPalette.updatedAt = Date.now();
+
+      updatedPalettes[currentIndex] = targetPalette;
+      return updatedPalettes;
+    });
+
+    console.log(`Color hex actualizado en índice ${colorIndex}: ${currentColor.name} → ${newHex}`);
+  }
+
+
 }

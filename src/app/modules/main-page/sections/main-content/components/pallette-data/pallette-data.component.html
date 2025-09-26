@@ -29,6 +29,6 @@
     </div>
   </div>
   @for (color of paletteService.currentPalette().colors; track $index) {
-    <app-color-shades [color]="color" />
+    <app-color-shades [color]="color" [index]="$index"/>
   }
 </div>
