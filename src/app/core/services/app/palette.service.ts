@@ -38,32 +38,27 @@ export class PaletteService {
       updatedAt: Date.now()
     };
 
-    const initialColor = this.colorGeneration.generateRandomColor()
+    const initialColorName = 'Primary'
+    const generatedShades = this.colorGeneration.generateShades(initialColorName, this.colorGeneration.generateRandomColor())
 
-    if (initialColor) {
-      const generatedShades = this.colorGeneration.generateShades(
-        initialColor.name,
-        initialColor.hex
-      );
-
-      newPalette.colors.push({
-        name: initialColor.name,
-        shades: generatedShades,
-      });
+    const initialColor: PaletteColor = {
+      name: initialColorName,
+      shades: generatedShades
     }
+
+    newPalette.colors.push(initialColor)
+
     this.palettes.update(currentPalettes => [...currentPalettes, newPalette]);
   }
 
   deletePalette(paletteId: string): void { }
   renamePalette(paletteId: string, newName: string): void { }
-
-
   setCurrentPalette(index: number): void { }
-  // getCurrentPalette(): Palette | null { }
   // getAllPalettes(): Palette[] { }
 
 
   addColorToPalette(): void {
+    console.log(this.currentPalette().colors)
     const currentPalettes = this.palettes();
     const currentIndex = this.currentPaletteIndex();
 
@@ -78,13 +73,23 @@ export class PaletteService {
       return
     }
 
-    const randomColor = this.colorGeneration.generateRandomColor()
-    const generatedShades = this.colorGeneration.generateShades(randomColor.name, randomColor.hex);
+    const colorsLenght = this.currentPalette().colors.length
 
-    const newColor: PaletteColor = {
-      name: randomColor.name,
-      shades: generatedShades
-    };
+    const newName = () => {
+      if (colorsLenght === 2) return 'Accent'
+      if (colorsLenght === 1) return 'Secondary'
+      return 'Primary'
+    }
+
+    const baseHex = () => {
+      if (colorsLenght > 1) return this.colorGeneration.getHarmoniousColor(this.currentPalette().colors[0].shades[5].value, 'complementary')
+      return this.colorGeneration.generateRandomColor()
+    }
+
+    var newColor: PaletteColor = {
+      name: newName(),
+      shades: this.colorGeneration.generateShades(newName(), baseHex())
+    }
 
     // Actualizar la paleta agregando el nuevo color
     this.palettes.update(palettes => {

@@ -41,18 +41,59 @@ export class colorGenerationService {
   private readonly scaleSteps = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
 
   /**
-   * Genera shades basado en un color hex
+   * Obtiene los factores de ajuste de chroma basados en el hue
    */
-  generateShades( colorName: string, hexColor: string): { key: string; value: string }[] {
+  private getHueAdjustments(hue: number): { chromaMultiplier: number; maxChroma: number } {
+    // Normalizar hue a 0-360
+    hue = ((hue % 360) + 360) % 360;
+
+    // Calibración basada en los valores reales de Tailwind CSS
+    if (hue >= 45 && hue <= 75) {
+      // Amarillos - muy problemáticos, necesitan chroma mucho más bajo
+      return { chromaMultiplier: 0.3, maxChroma: 0.12 };
+    } else if (hue >= 15 && hue <= 45) {
+      // Naranjas - también problemáticos pero menos
+      return { chromaMultiplier: 0.5, maxChroma: 0.16 };
+    } else if (hue >= 345 || hue <= 15) {
+      // Rojos - necesitan ajuste moderado
+      return { chromaMultiplier: 0.7, maxChroma: 0.18 };
+    } else if (hue >= 75 && hue <= 165) {
+      // Verdes - generalmente funcionan bien
+      return { chromaMultiplier: 0.85, maxChroma: 0.22 };
+    } else if (hue >= 165 && hue <= 285) {
+      // Azules y cyans - los que mejor funcionan
+      return { chromaMultiplier: 1.0, maxChroma: 0.25 };
+    } else if (hue >= 285 && hue <= 345) {
+      // Purples y magentas - ajuste ligero
+      return { chromaMultiplier: 0.8, maxChroma: 0.20 };
+    }
+
+    // Fallback
+    return { chromaMultiplier: 0.8, maxChroma: 0.18 };
+  }
+
+  /**
+   * Genera shades basado en un color hex (método mejorado)
+   */
+  generateShades(colorName: string, hexColor: string): { key: string; value: string }[] {
     // Convertir hex a OKLCH
     const baseOklch = this.hexToOklch(hexColor);
+
+    // Obtener ajustes específicos para este hue
+    const hueAdjustments = this.getHueAdjustments(baseOklch.h);
 
     // Determinar posición del color en la escala
     const basePosition = this.findColorPosition(baseOklch.l);
 
     // Calcular chroma de referencia para posición 500
     const baseConfig = this.scaleConfig[basePosition as keyof typeof this.scaleConfig];
-    const referenceChroma = (baseOklch.c / baseConfig.chromaFactor) * this.scaleConfig[500].chromaFactor;
+    let referenceChroma = (baseOklch.c / baseConfig.chromaFactor) * this.scaleConfig[500].chromaFactor;
+
+    // Aplicar multiplicador específico del hue
+    referenceChroma *= hueAdjustments.chromaMultiplier;
+
+    // Limitar el chroma máximo según el hue
+    referenceChroma = Math.min(referenceChroma, hueAdjustments.maxChroma);
 
     // Generar todas las variantes
     const paletteArray: { key: string; value: string }[] = [];
@@ -63,13 +104,15 @@ export class colorGenerationService {
       // Calcular chroma ajustado
       let adjustedChroma = referenceChroma * config.chromaFactor;
 
-      // Aplicar límites de chroma más restrictivos
+      // Aplicar límites de chroma más específicos por shade
       if (step <= 100) {
         adjustedChroma = Math.min(adjustedChroma, 0.02);
       } else if (step <= 200) {
-        adjustedChroma = Math.min(adjustedChroma, 0.06);
+        adjustedChroma = Math.min(adjustedChroma, 0.05);
       } else if (step >= 900) {
-        adjustedChroma = Math.min(adjustedChroma, 0.08);
+        // Los tonos oscuros necesitan menos chroma para amarillos/naranjas
+        const darkLimit = baseOklch.h >= 45 && baseOklch.h <= 75 ? 0.04 : 0.08;
+        adjustedChroma = Math.min(adjustedChroma, darkLimit);
       }
 
       const variantOklch = {
@@ -81,7 +124,7 @@ export class colorGenerationService {
       // Convertir de vuelta a hex
       const hexValue = this.oklchToHex(variantOklch.l, variantOklch.c, variantOklch.h);
 
-      // Agregar al array en lugar del objeto
+      // Agregar al array
       paletteArray.push({
         key: `--color-${colorName}-${step}`,
         value: hexValue
@@ -93,36 +136,129 @@ export class colorGenerationService {
 
   /**
    * Genera un color aleatorio de los colores por defecto
-   * @returns {Object} Objeto con el nombre del color y su valor hexadecimal
+   * @returns {string} Valor hexadecimal del color aleatorio
    */
-  generateRandomColor(): { name: string; hex: string } {
+  generateRandomColor(): string {
     const colorNames = Object.keys(this.defautColors);
     const randomIndex = Math.floor(Math.random() * colorNames.length);
     const randomColorName = colorNames[randomIndex];
-    const randomColorHex = this.defautColors[randomColorName as keyof typeof this.defautColors];
+    return this.defautColors[randomColorName as keyof typeof this.defautColors];
+  }
 
-    const capitalizedColorName = randomColorName.charAt(0).toUpperCase() + randomColorName.slice(1);
+  /**
+   * Genera un color armonioso basado en un color hex usando diferentes esquemas
+   * @param hexColor Color hex base
+   * @param type Tipo de armonía ('complementary' | 'triadic' | 'analogous' | 'split-complementary')
+   * @returns Color resultante en formato hex
+   */
+  getHarmoniousColor(hexColor: string, type: 'complementary' | 'triadic' | 'analogous' | 'split-complementary' = 'complementary'): string {
+    // Convertir hex a HSL para manipular el hue más fácilmente
+    const hsl = this.hexToHsl(hexColor);
+
+    let hueOffset: number;
+
+    switch (type) {
+      case 'complementary':
+        hueOffset = 180;
+        break;
+      case 'triadic':
+        hueOffset = 120; // Podríamos devolver 240 también, pero uno es suficiente
+        break;
+      case 'analogous':
+        hueOffset = 30; // Color cercano, podríamos usar -30 también
+        break;
+      case 'split-complementary':
+        hueOffset = 150; // Podríamos usar 210 también
+        break;
+      default:
+        hueOffset = 180;
+    }
+
+    // Calcular nuevo hue
+    let newHue = hsl.h + hueOffset;
+    if (newHue >= 360) newHue -= 360;
+    if (newHue < 0) newHue += 360;
+
+    // Crear nuevo color con el mismo saturation y lightness
+    const newHsl = {
+      h: newHue,
+      s: hsl.s,
+      l: hsl.l
+    };
+
+    // Convertir de vuelta a hex
+    return this.hslToHex(newHsl.h, newHsl.s, newHsl.l);
+  }
+
+  // ... (resto de métodos privados sin cambios)
+  private hexToHsl(hex: string): { h: number; s: number; l: number } {
+    const rgb = this.hexToRgb(hex);
+    return this.rgbToHsl(rgb.r, rgb.g, rgb.b);
+  }
+
+  private rgbToHsl(r: number, g: number, b: number): { h: number; s: number; l: number } {
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    let h = 0;
+    let s = 0;
+    const l = (max + min) / 2;
+
+    if (max !== min) {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+      switch (max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+      }
+      h /= 6;
+    }
 
     return {
-      name: capitalizedColorName,
-      hex: randomColorHex
+      h: Math.round(h * 360),
+      s: Math.round(s * 100) / 100,
+      l: Math.round(l * 100) / 100
     };
   }
 
-  /**
-   * Convierte un color HEX a OKLCH
-   */
-  private hexToOklch(hex: string): { l: number; c: number; h: number } {
-    // Convertir hex a RGB
-    const rgb = this.hexToRgb(hex);
+  private hslToHex(h: number, s: number, l: number): string {
+    h = h / 360;
 
-    // Convertir RGB a OKLCH
+    const hue2rgb = (p: number, q: number, t: number): number => {
+      if (t < 0) t += 1;
+      if (t > 1) t -= 1;
+      if (t < 1 / 6) return p + (q - p) * 6 * t;
+      if (t < 1 / 2) return q;
+      if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+      return p;
+    };
+
+    let r, g, b;
+
+    if (s === 0) {
+      r = g = b = l; // achromatic
+    } else {
+      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      const p = 2 * l - q;
+      r = hue2rgb(p, q, h + 1 / 3);
+      g = hue2rgb(p, q, h);
+      b = hue2rgb(p, q, h - 1 / 3);
+    }
+
+    const toHex = (c: number): string => {
+      const hex = Math.round(c * 255).toString(16);
+      return hex.length === 1 ? '0' + hex : hex;
+    };
+
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+  }
+
+  private hexToOklch(hex: string): { l: number; c: number; h: number } {
+    const rgb = this.hexToRgb(hex);
     return this.rgbToOklch(rgb.r, rgb.g, rgb.b);
   }
 
-  /**
-   * Convierte HEX a RGB
-   */
   private hexToRgb(hex: string): { r: number; g: number; b: number } {
     const cleanHex = hex.replace('#', '');
     const r = parseInt(cleanHex.substr(0, 2), 16) / 255;
@@ -131,21 +267,15 @@ export class colorGenerationService {
     return { r, g, b };
   }
 
-  /**
-   * Convierte RGB a OKLCH
-   */
   private rgbToOklch(r: number, g: number, b: number): { l: number; c: number; h: number } {
-    // Convertir a RGB lineal
     const rLin = this.sRgbToLinear(r);
     const gLin = this.sRgbToLinear(g);
     const bLin = this.sRgbToLinear(b);
 
-    // Convertir a XYZ (D65)
     const x = 0.4124564 * rLin + 0.3575761 * gLin + 0.1804375 * bLin;
     const y = 0.2126729 * rLin + 0.7151522 * gLin + 0.0721750 * bLin;
     const z = 0.0193339 * rLin + 0.1191920 * gLin + 0.9503041 * bLin;
 
-    // Convertir a OKLAB
     const l_ = Math.cbrt(0.8189330101 * x + 0.3618667424 * y - 0.1288597137 * z);
     const m_ = Math.cbrt(0.0329845436 * x + 0.9293118715 * y + 0.0361456387 * z);
     const s_ = Math.cbrt(0.0482003018 * x + 0.2643662691 * y + 0.6338517070 * z);
@@ -154,7 +284,6 @@ export class colorGenerationService {
     const a = 1.9779984951 * l_ - 2.4285922050 * m_ + 0.4505937099 * s_;
     const bLab = 0.0259040371 * l_ + 0.7827717662 * m_ - 0.8086757660 * s_;
 
-    // Convertir a OKLCH
     const c = Math.sqrt(a * a + bLab * bLab);
     let h = Math.atan2(bLab, a) * 180 / Math.PI;
     if (h < 0) h += 360;
@@ -162,16 +291,10 @@ export class colorGenerationService {
     return { l, c, h };
   }
 
-  /**
-   * Convierte sRGB a RGB lineal
-   */
   private sRgbToLinear(val: number): number {
     return val <= 0.04045 ? val / 12.92 : Math.pow((val + 0.055) / 1.055, 2.4);
   }
 
-  /**
-   * Determina la posición del color en la escala basado en su luminosidad
-   */
   private findColorPosition(lightness: number): number {
     if (lightness > 0.85) return 100;
     if (lightness > 0.75) return 200;
@@ -185,15 +308,10 @@ export class colorGenerationService {
     return 950;
   }
 
-  /**
-   * Convierte OKLCH de vuelta a HEX con gamut mapping
-   */
   private oklchToHex(l: number, c: number, h: number): string {
-    // Clamp de lightness
     l = Math.max(0, Math.min(1, l));
     c = Math.max(0, c);
 
-    // Gamut mapping: reducir chroma hasta que el color esté en gamut sRGB
     let mappedC = c;
     let isInGamut = false;
     let iterations = 0;
@@ -202,37 +320,30 @@ export class colorGenerationService {
     while (!isInGamut && iterations < maxIterations) {
       const testColor = this.oklchToRgbRaw(l, mappedC, h);
 
-      // Verificar si está en gamut sRGB (todos los valores entre 0 y 1)
       if (testColor.r >= 0 && testColor.r <= 1 &&
         testColor.g >= 0 && testColor.g <= 1 &&
         testColor.b >= 0 && testColor.b <= 1) {
         isInGamut = true;
       } else {
-        // Reducir chroma en un 5% y volver a probar
         mappedC *= 0.95;
       }
       iterations++;
     }
 
-    // Si no se pudo mapear, usar chroma mínimo
     if (!isInGamut) {
       mappedC = 0.001;
     }
 
-    // Convertir con el chroma mapeado
     const rgb = this.oklchToRgbRaw(l, mappedC, h);
 
-    // Clamp final por seguridad
     const r = Math.max(0, Math.min(1, rgb.r));
     const g = Math.max(0, Math.min(1, rgb.g));
     const b = Math.max(0, Math.min(1, rgb.b));
 
-    // Convertir a sRGB
     const rSrgb = this.linearToSRgb(r);
     const gSrgb = this.linearToSRgb(g);
     const bSrgb = this.linearToSRgb(b);
 
-    // Convertir a HEX
     const rHex = Math.round(rSrgb * 255).toString(16).padStart(2, '0');
     const gHex = Math.round(gSrgb * 255).toString(16).padStart(2, '0');
     const bHex = Math.round(bSrgb * 255).toString(16).padStart(2, '0');
@@ -240,16 +351,11 @@ export class colorGenerationService {
     return `#${rHex}${gHex}${bHex}`;
   }
 
-  /**
-   * Convierte OKLCH a RGB lineal sin clamp (para gamut testing)
-   */
   private oklchToRgbRaw(l: number, c: number, h: number): { r: number; g: number; b: number } {
-    // Convertir OKLCH a OKLAB
     const hRad = h * Math.PI / 180;
     const a = c * Math.cos(hRad);
     const bLab = c * Math.sin(hRad);
 
-    // Convertir OKLAB a RGB lineal
     const l_ = l + 0.3963377774 * a + 0.2158037573 * bLab;
     const m_ = l - 0.1055613458 * a - 0.0638541728 * bLab;
     const s_ = l - 0.0894841775 * a - 1.2914855480 * bLab;
@@ -262,7 +368,6 @@ export class colorGenerationService {
     const y = -1.2684380046 * l3 + 2.6097574011 * m3 - 0.3413193965 * s3;
     const z = -0.0041960863 * l3 - 0.7034186147 * m3 + 1.7076147010 * s3;
 
-    // Convertir XYZ a RGB lineal
     const r = +3.2404542 * x - 1.5371385 * y - 0.4985314 * z;
     const g = -0.9692660 * x + 1.8760108 * y + 0.0415560 * z;
     const b = +0.0556434 * x - 0.2040259 * y + 1.0572252 * z;
@@ -270,9 +375,6 @@ export class colorGenerationService {
     return { r, g, b };
   }
 
-  /**
-   * Convierte RGB lineal a sRGB
-   */
   private linearToSRgb(val: number): number {
     return val <= 0.0031308 ? val * 12.92 : 1.055 * Math.pow(val, 1 / 2.4) - 0.055;
   }
