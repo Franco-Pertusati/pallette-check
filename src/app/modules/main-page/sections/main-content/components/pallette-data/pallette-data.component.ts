@@ -3,6 +3,8 @@ import { ButtonComponent } from "../../../../../../shared/ui/button/button.compo
 import { PaletteService } from '../../../../../../core/services/app/palette.service';
 import { ColorShadesComponent } from "../color-shades/color-shades.component";
 import { CommonModule } from '@angular/common';
+import { DialogService } from '../../../../../../core/services/dialog.service';
+import { ExportDialogComponent } from './export-dialog/export-dialog.component';
 
 @Component({
   selector: 'app-pallette-data',
@@ -11,6 +13,7 @@ import { CommonModule } from '@angular/common';
 })
 export class PalletteDataComponent {
   paletteService = inject(PaletteService);
+  dialog = inject(DialogService)
 
   ngOnInit() {
     this.createPalette()
@@ -22,5 +25,9 @@ export class PalletteDataComponent {
 
   addNewColor() {
     this.paletteService.addColorToPalette()
+  }
+
+  openExportDialog() {
+    this.dialog.openDialog(ExportDialogComponent)
   }
 }

@@ -1,7 +1,7 @@
-<div class="dialogBackground" (click)="closeDialog()">
-  <div class="dialogCard appearGrowing relative" (click)="stopPropagation($event)">
+<div class="fixed inset-0 z-50 grid place-items-center bg-light/50 backdrop-blur" (click)="closeDialog()">
+  <div class="relative w-full md:w-auto md:min-w-[424px] bg-dark border border-x-border border-t-highline border-b-bottomline rounded-2xl" (click)="stopPropagation($event)">
     <ng-content />
-    <div class="closeBtnContainer">
+    <div class="absolute top-3 right-3">
       <app-button [icon]="'close'" (click)="closeDialog()" />
     </div>
   </div>

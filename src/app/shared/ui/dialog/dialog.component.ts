@@ -7,7 +7,6 @@ import { DialogService } from '../../../core/services/dialog.service';
   standalone: true,
   imports: [ButtonComponent],
   templateUrl: './dialog.component.html',
-  styleUrl: './dialog.component.css'
 })
 export class DialogComponent {
   dialogService = inject(DialogService)

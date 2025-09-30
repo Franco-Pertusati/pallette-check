@@ -1,0 +1,110 @@
+<div>
+  <div class="p-6 border-b border-border flex flex-col gap-2">
+    <span class="font-bold">Export options</span>
+    <form class="flex gap-3">
+      <label class="block">
+        <input
+          type="radio"
+          name="colorScheme"
+          [value]="'CSS'"
+          (change)="setSelected('CSS')"
+          [checked]="selected === 'CSS'"
+          class="peer hidden border-text"
+        />
+        <div
+          class="border select-none border-t-highline border-b-bottomline border-x-border w-full rounded-xl p-2 flex gap-2 justify-between bg-neutral peer-checked:bg-text peer-checked:text-dark peer-checked:border-text cursor-pointer"
+        >
+          <span>CSS</span>
+        </div>
+      </label>
+
+      <label class="block">
+        <input
+          type="radio"
+          name="colorScheme"
+          [value]="'Tailwind-3'"
+          (change)="setSelected('Tailwind-3')"
+          [checked]="selected === 'Tailwind-3'"
+          class="peer hidden border-text"
+        />
+        <div
+          class="border select-none border-t-highline border-b-bottomline border-x-border w-full rounded-xl p-2 flex gap-2 justify-between bg-neutral peer-checked:bg-text peer-checked:text-dark peer-checked:border-text cursor-pointer"
+        >
+          <span>Tailwind-3</span>
+        </div>
+      </label>
+
+      <label class="block">
+        <input
+          type="radio"
+          name="colorScheme"
+          [value]="'Tailwind-4'"
+          (change)="setSelected('Tailwind-4')"
+          [checked]="selected === 'Tailwind-4'"
+          class="peer hidden border-text"
+        />
+        <div
+          class="border select-none border-t-highline border-b-bottomline border-x-border w-full rounded-xl p-2 flex gap-2 justify-between bg-neutral peer-checked:bg-text peer-checked:text-dark peer-checked:border-text cursor-pointer"
+        >
+          <span>Tailwind 4</span>
+        </div>
+      </label>
+    </form>
+    <div class="absolute top-[104px] right-6">
+      <app-button [icon]="'content_copy'" [style]="'filled'" [label]="'Copy'" />
+    </div>
+  </div>
+  <div class="p-6">
+    @if (selected === "CSS") {
+      <div>
+        <div class="p-6 bg-neutral rounded-xl flex gap-3 border border-border">
+          @for (color of palette.colors; track $index) {
+            <div class="flex flex-col">
+              @for (shade of color.shades; track $index) {
+                <span>
+                  {{ `--${shade.key}: ${shade.value};` }}
+                </span>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    @if (selected === "Tailwind-3") {
+      <div>
+        <div class="p-6 bg-neutral rounded-xl flex gap-3 border border-border">
+          @for (color of palette.colors; track $index) {
+            <div class="flex flex-col">
+              {{ `'${color.name}' : {` }}
+              @for (shade of color.shades; track $index) {
+                <span>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{
+                    `'${shade.key.split("-")[1]}' : '${shade.value}',`
+                  }}
+                </span>
+              }
+              &#125;
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    @if (selected === "Tailwind-4") {
+      <div>
+        <div class="p-6 bg-neutral rounded-xl flex gap-3 border border-border">
+          @for (color of palette.colors; track $index) {
+            <div class="flex flex-col">
+              @for (shade of color.shades; track $index) {
+                <span>
+                  {{ `--color-${shade.key}: ${shade.value};` }}
+                </span>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>

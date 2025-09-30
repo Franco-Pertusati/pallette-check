@@ -53,6 +53,10 @@
   --color-accent-900: #3a436e;
   --color-accent-950: #272b44;
 
+  --color-danger: #db2828;
+  --color-warning: #fbbd08;
+  --color-succes: #21ba45;
+
   --container-7xl: 1424px
 }
 

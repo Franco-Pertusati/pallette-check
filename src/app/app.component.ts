@@ -5,10 +5,11 @@ import { DialogService } from './core/services/dialog.service';
 import { CommonModule } from '@angular/common';
 import { ToastListComponent } from "./shared/ui/toast-list/toast-list.component";
 import { ToastService } from './core/services/toast.service';
+import { NavbarComponent } from "./modules/main-page/sections/navbar/navbar.component";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, DialogComponent, CommonModule, ToastListComponent],
+  imports: [RouterOutlet, DialogComponent, CommonModule, ToastListComponent, NavbarComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

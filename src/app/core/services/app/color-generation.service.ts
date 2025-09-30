@@ -92,7 +92,7 @@ export class colorGenerationService {
         break;
       case 'triadic':
         hueOffset = Math.random() < 0.5 ? 120 : 240; // Elegir aleatoriamente entre los dos triádicos
-        hueVariation = 10;
+        hueVariation = 5;
         break;
       case 'analogous':
         hueOffset = Math.random() < 0.5 ? 30 : -30; // Elegir aleatoriamente la dirección

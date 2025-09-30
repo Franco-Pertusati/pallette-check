@@ -81,7 +81,7 @@ export class PaletteService {
     }
 
     const baseHex = () => {
-      if (colorsLenght === 1) return this.colorGeneration.getHarmoniousColor(this.currentPalette().colors[0].shades[5].value)
+      if (colorsLenght === 0) return this.colorGeneration.getHarmoniousColor(this.currentPalette().colors[0].shades[5].value)
       return this.colorGeneration.generateRandomColor()
     }
 

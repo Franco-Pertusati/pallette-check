@@ -4,10 +4,23 @@ import { MainPageComponent } from "./main-page.component";
 export const MAIN_PAGE_ROUTES: Routes = [
   {
     path: '',
+    redirectTo: 'new-palette',
+    pathMatch: 'full',
+  },
+  {
+    path: 'new-palette',
     component: MainPageComponent,
-    // children: [
-    //   { path: 'sign-up', component:  },
-    //   { path: '', redirectTo: 'sign-up', pathMatch: 'full' }
-    // ]
+  },
+  {
+    path: 'my-palettes',
+    component: MainPageComponent,
+  },
+  {
+    path: 'help',
+    component: MainPageComponent,
+  },
+  {
+    path: '**',
+    redirectTo: 'new-palette', // Redirección por si alguien pone una ruta no válida
   }
 ];
