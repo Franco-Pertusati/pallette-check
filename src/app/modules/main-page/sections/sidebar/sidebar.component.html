@@ -11,11 +11,13 @@
     </div>
     <form class="flex flex-col gap-4">
       <span class="font-bold">Combination scheme</span>
+
       <label class="block">
         <input
           type="radio"
-          name="opcion"
-          value="opcion1"
+          name="colorScheme"
+          value="complementary"
+          [(ngModel)]="colorGenerationService.colorSchema"
           class="peer hidden border-text"
         />
         <div
@@ -24,24 +26,28 @@
           <span>Complementary</span>
         </div>
       </label>
+
       <label class="block">
         <input
           type="radio"
-          name="opcion"
-          value="opcion1"
+          name="colorScheme"
+          value="split-complementary"
+          [(ngModel)]="colorGenerationService.colorSchema"
           class="peer hidden border-text"
         />
         <div
           class="border select-none border-t-highline border-b-bottomline border-x-border shadow-sm w-full rounded-xl p-2 flex gap-2 justify-between bg-neutral peer-checked:bg-text peer-checked:text-dark peer-checked:border-text cursor-pointer"
         >
-          <span>split-complementary</span>
+          <span>Split-complementary</span>
         </div>
       </label>
+
       <label class="block">
         <input
           type="radio"
-          name="opcion"
-          value="opcion1"
+          name="colorScheme"
+          value="analogous"
+          [(ngModel)]="colorGenerationService.colorSchema"
           class="peer hidden border-text"
         />
         <div
@@ -50,11 +56,13 @@
           <span>Analogous</span>
         </div>
       </label>
+
       <label class="block">
         <input
           type="radio"
-          name="opcion"
-          value="opcion1"
+          name="colorScheme"
+          value="triadic"
+          [(ngModel)]="colorGenerationService.colorSchema"
           class="peer hidden border-text"
         />
         <div

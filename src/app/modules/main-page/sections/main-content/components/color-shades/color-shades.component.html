@@ -12,7 +12,7 @@
       <input
         #colorHex
         type="text"
-        [value]="color().shades[4].value"
+        [value]="color().shades[5].value"
         (keyup.enter)="editHex(colorHex.value)"
         class="focus:outline-0 border border-border rounded-xl p-1.5 w-20 bg-neutral"
         placeholder="Color hex"
@@ -31,10 +31,17 @@
   </div>
   <div class="flex gap-1.5 overflow-hidden">
     @for (shade of color().shades; track $index) {
-      <div
-        [style]="`background-color: ${shade.value};`"
-        class="h-24 w-18 grow rounded-xl"
-      ></div>
+<button (click)="copyColor(shade.value)"
+  [style]="`background-color: ${shade.value};`"
+  class="h-24 w-18 grow rounded-xl flex justify-center items-center group relative hover:cursor-pointer"
+>
+  <span
+    class="bg-dark p-1 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity absolute"
+  >
+    {{ shade.value }}
+  </span>
+</button>
+
     }
   </div>
 </div>

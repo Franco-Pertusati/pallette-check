@@ -5,7 +5,6 @@ import { Toast } from '../../../core/interfaces/toast';
   selector: 'app-toast',
   imports: [],
   templateUrl: './toast.component.html',
-  styleUrl: './toast.component.css'
 })
 export class ToastComponent {
   toast = input.required<Toast>()

@@ -58,7 +58,6 @@ export class PaletteService {
 
 
   addColorToPalette(): void {
-    console.log(this.currentPalette().colors)
     const currentPalettes = this.palettes();
     const currentIndex = this.currentPaletteIndex();
 
@@ -82,7 +81,7 @@ export class PaletteService {
     }
 
     const baseHex = () => {
-      if (colorsLenght > 1) return this.colorGeneration.getHarmoniousColor(this.currentPalette().colors[0].shades[5].value, 'complementary')
+      if (colorsLenght === 1) return this.colorGeneration.getHarmoniousColor(this.currentPalette().colors[0].shades[5].value)
       return this.colorGeneration.generateRandomColor()
     }
 
