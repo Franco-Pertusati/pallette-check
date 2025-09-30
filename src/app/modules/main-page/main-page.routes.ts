@@ -1,5 +1,7 @@
 import { Routes } from "@angular/router";
 import { MainPageComponent } from "./main-page.component";
+import { MyPalettesComponent } from "../my-palettes/my-palettes.component";
+import { HelpComponent } from "../help/help.component";
 
 export const MAIN_PAGE_ROUTES: Routes = [
   {
@@ -13,14 +15,14 @@ export const MAIN_PAGE_ROUTES: Routes = [
   },
   {
     path: 'my-palettes',
-    component: MainPageComponent,
+    component: MyPalettesComponent,
   },
   {
     path: 'help',
-    component: MainPageComponent,
+    component: HelpComponent,
   },
   {
     path: '**',
-    redirectTo: 'new-palette', // Redirección por si alguien pone una ruta no válida
+    redirectTo: 'new-palette',
   }
 ];

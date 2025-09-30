@@ -1,3 +1,4 @@
+<app-toast-list />
 <app-navbar />
 <router-outlet />
 @if (dialog.isDialogOpen()) {
@@ -5,4 +6,3 @@
     <ng-container *ngComponentOutlet="dialog.componentToShow()"></ng-container>
   </app-dialog>
 }
-<app-toast-list />

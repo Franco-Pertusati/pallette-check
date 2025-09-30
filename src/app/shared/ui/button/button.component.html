@@ -1,6 +1,6 @@
 @let btn = { label: label(), icon: icon(), notifications: notifications(), showLabel: showLabel(), showIcon: showIcon() };
 
-<button [class]="classes">
+<button [class]="classes" (click)="btnClick.emit()">
   @if (btn.showIcon && btn.icon) {
     <i class="material-symbols-rounded">{{ btn.icon }}</i>
   }

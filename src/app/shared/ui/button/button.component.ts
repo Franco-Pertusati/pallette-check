@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-button',
@@ -6,6 +6,7 @@ import { Component, input } from '@angular/core';
   templateUrl: './button.component.html',
 })
 export class ButtonComponent {
+  @Output() btnClick = new EventEmitter<void>();
   style = input<'text' | 'filled' | 'border'>('text');
   classList = input<string>('');
   label = input<string>('');

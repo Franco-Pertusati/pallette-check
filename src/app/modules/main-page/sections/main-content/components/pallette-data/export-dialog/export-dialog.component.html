@@ -51,60 +51,46 @@
       </label>
     </form>
     <div class="absolute top-[104px] right-6">
-      <app-button [icon]="'content_copy'" [style]="'filled'" [label]="'Copy'" />
+      <app-button (btnClick)="copyExport()" [icon]="'content_copy'" [style]="'filled'" [label]="'Copy'" />
     </div>
   </div>
   <div class="p-6">
-    @if (selected === "CSS") {
+    <ng-container *ngIf="selected === 'CSS'">
       <div>
         <div class="p-6 bg-neutral rounded-xl flex gap-3 border border-border">
-          @for (color of palette.colors; track $index) {
+          <div *ngFor="let color of palette.colors">
             <div class="flex flex-col">
-              @for (shade of color.shades; track $index) {
-                <span>
-                  {{ `--${shade.key}: ${shade.value};` }}
-                </span>
-              }
+              <span *ngFor="let shade of color.shades">{{ `--${shade.key}: ${shade.value};` }}</span>
             </div>
-          }
+          </div>
         </div>
       </div>
-    }
+    </ng-container>
 
-    @if (selected === "Tailwind-3") {
+    <ng-container *ngIf="selected === 'Tailwind-3'">
       <div>
         <div class="p-6 bg-neutral rounded-xl flex gap-3 border border-border">
-          @for (color of palette.colors; track $index) {
+          <div *ngFor="let color of palette.colors">
             <div class="flex flex-col">
-              {{ `'${color.name}' : {` }}
-              @for (shade of color.shades; track $index) {
-                <span>
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{
-                    `'${shade.key.split("-")[1]}' : '${shade.value}',`
-                  }}
-                </span>
-              }
-              &#125;
+              <div>{{ `'${color.name}' : {` }}</div>
+              <span *ngFor="let shade of color.shades">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ `'${shade.key.split("-")[1]}' : '${shade.value}',` }}</span>
+              <div>&#125;</div>
             </div>
-          }
+          </div>
         </div>
       </div>
-    }
+    </ng-container>
 
-    @if (selected === "Tailwind-4") {
+    <ng-container *ngIf="selected === 'Tailwind-4'">
       <div>
         <div class="p-6 bg-neutral rounded-xl flex gap-3 border border-border">
-          @for (color of palette.colors; track $index) {
+          <div *ngFor="let color of palette.colors">
             <div class="flex flex-col">
-              @for (shade of color.shades; track $index) {
-                <span>
-                  {{ `--color-${shade.key}: ${shade.value};` }}
-                </span>
-              }
+              <span *ngFor="let shade of color.shades">{{ `--color-${shade.key}: ${shade.value};` }}</span>
             </div>
-          }
+          </div>
         </div>
       </div>
-    }
+    </ng-container>
   </div>
 </div>

@@ -5,6 +5,7 @@ import { ColorShadesComponent } from "../color-shades/color-shades.component";
 import { CommonModule } from '@angular/common';
 import { DialogService } from '../../../../../../core/services/dialog.service';
 import { ExportDialogComponent } from './export-dialog/export-dialog.component';
+import { ToastService } from '../../../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-pallette-data',
@@ -14,6 +15,7 @@ import { ExportDialogComponent } from './export-dialog/export-dialog.component';
 export class PalletteDataComponent {
   paletteService = inject(PaletteService);
   dialog = inject(DialogService)
+  toast = inject(ToastService)
 
   ngOnInit() {
     this.createPalette()
@@ -29,5 +31,10 @@ export class PalletteDataComponent {
 
   openExportDialog() {
     this.dialog.openDialog(ExportDialogComponent)
+  }
+
+  savePalette() {
+    this.paletteService.savePalette()
+    this.toast.success("Palette saved")
   }
 }

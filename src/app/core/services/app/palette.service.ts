@@ -13,6 +13,8 @@ export class PaletteService {
   palettes = signal<Palette[]>([]);
   currentPaletteIndex = signal<number>(0);
 
+  unsavedChanges: boolean = false
+
   currentPalette = linkedSignal(() => {
     const palettes = this.palettes();
     const index = this.currentPaletteIndex();
@@ -26,7 +28,87 @@ export class PaletteService {
       if (palette && palette.colors.length > 0) {
         this.cssMagnament.applyCSSVariables(this.currentPalette());
       }
+      this.unsavedChanges = true
     });
+  }
+
+  private storageKey = 'palette';
+
+  // Guardar en localStorage
+  savePalette(): void {
+    const palette = this.currentPalette()
+    if (!palette) return;
+
+    try {
+      // Save the palette itself
+      localStorage.setItem(palette.id, JSON.stringify(palette));
+
+      // Maintain an index of saved palette ids under storageKey
+      const indexRaw = localStorage.getItem(this.storageKey);
+      const index = indexRaw ? JSON.parse(indexRaw) as string[] : [];
+      if (!index.includes(palette.id)) {
+        index.push(palette.id);
+        localStorage.setItem(this.storageKey, JSON.stringify(index));
+      }
+
+      this.unsavedChanges = false;
+    } catch (e) {
+      console.error('Error saving palette to localStorage', e);
+    }
+  }
+
+  loadPalettes(): Palette[] | null {
+    try {
+      const indexRaw = localStorage.getItem(this.storageKey);
+      if (!indexRaw) return null;
+
+      const ids = JSON.parse(indexRaw) as string[];
+      const palettes: Palette[] = [];
+
+      ids.forEach(id => {
+        const raw = localStorage.getItem(id);
+        if (raw) {
+          try {
+            const palette = JSON.parse(raw) as Palette;
+            palettes.push(palette);
+          } catch {
+            // Ignore invalid palette
+          }
+        }
+      });
+
+      if (palettes.length) {
+        this.palettes.set(palettes);
+        // Ensure current index is valid
+        if (this.currentPaletteIndex() >= palettes.length) {
+          this.currentPaletteIndex.set(0);
+        }
+      }
+
+      return palettes;
+    } catch (e) {
+      console.error('Error loading palettes from localStorage', e);
+      return null;
+    }
+  }
+
+  // Eliminar
+  clearPalette(): void {
+    try {
+      const indexRaw = localStorage.getItem(this.storageKey);
+      if (indexRaw) {
+        const ids = JSON.parse(indexRaw) as string[];
+        ids.forEach(id => localStorage.removeItem(id));
+      }
+      localStorage.removeItem(this.storageKey);
+
+      // Reset in-memory state
+      this.palettes.set([]);
+      this.currentPaletteIndex.set(0);
+      this.unsavedChanges = false;
+    } catch (e) {
+      console.error('Error clearing palettes from localStorage', e);
+    }
   }
 
   createPalette(name: string): void {
@@ -51,9 +133,58 @@ export class PaletteService {
     this.palettes.update(currentPalettes => [...currentPalettes, newPalette]);
   }
 
-  deletePalette(paletteId: string): void { }
-  renamePalette(paletteId: string, newName: string): void { }
-  setCurrentPalette(index: number): void { }
+  deletePalette(paletteId: string): void {
+    // Remove from localStorage index and the stored item
+    try {
+      const indexRaw = localStorage.getItem(this.storageKey);
+      if (indexRaw) {
+        let ids = JSON.parse(indexRaw) as string[];
+        ids = ids.filter(id => id !== paletteId);
+        localStorage.setItem(this.storageKey, JSON.stringify(ids));
+      }
+      localStorage.removeItem(paletteId);
+    } catch (e) {
+      console.error('Error deleting palette from localStorage', e);
+    }
+
+    // Update in-memory palettes
+    this.palettes.update(palettes => palettes.filter(p => p.id !== paletteId));
+
+    // Adjust current index if needed
+    const currentIndex = this.currentPaletteIndex();
+    const remaining = this.palettes().length;
+    if (remaining === 0) {
+      this.currentPaletteIndex.set(0);
+    } else if (currentIndex >= remaining) {
+      this.currentPaletteIndex.set(remaining - 1);
+    }
+  }
+
+  renamePalette(paletteId: string, newName: string): void {
+    const trimmed = newName.trim();
+    if (!trimmed) return;
+
+    this.palettes.update(palettes => {
+      const updated = palettes.map(p => p.id === paletteId ? { ...p, name: trimmed, updatedAt: Date.now() } : p);
+
+      // Persist renamed palette if present in localStorage
+      const changed = updated.find(p => p.id === paletteId);
+      if (changed) {
+        try { localStorage.setItem(changed.id, JSON.stringify(changed)); } catch (e) { console.error(e); }
+      }
+
+      return updated;
+    });
+  }
+
+  setCurrentPalette(index: number): void {
+    const palettes = this.palettes();
+    if (index < 0 || index >= palettes.length) {
+      console.warn(`Índice de paleta inválido: ${index}.`);
+      return;
+    }
+    this.currentPaletteIndex.set(index);
+  }
   // getAllPalettes(): Palette[] { }
 
 

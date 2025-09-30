@@ -1,0 +1,28 @@
+<div class="h-screen w-full bg-dark pt-14 overflow-y-auto">
+  <div class="max-w-7xl mx-auto w-full px-6 py-4">
+    <h1 class="font-bold text-2xl">My palettes</h1>
+    <div class="my-6 flex gap-6 w-full flex-wrap">
+      @for (p of palettes; track $index) {
+        <div class="flex gap-1 flex-col max-w-sm w-full">
+          <div class="flex justify-between items-center">
+            <h2>{{ p.name }}</h2>
+            <div>
+              <app-button [icon]="'upgrade'" (btnClick)="openExportDialogs()" />
+              <app-button [icon]="'delete'" />
+              <app-button [icon]="'open_in_new'" />
+              <app-button [icon]="'edit'" />
+            </div>
+          </div>
+          <div class="flex rounded-xl overflow-hidden">
+            @for (c of p.colors; track $index) {
+              <div
+                class="h-32 grow"
+                [style]="`background-color: ${c.shades[6].value}`"
+              ></div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

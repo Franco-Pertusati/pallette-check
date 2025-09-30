@@ -21,23 +21,23 @@ export class colorGenerationService {
   };
 
   private readonly defautColors = {
-    red: "#ef4444",
-    orange: "#f97316",
-    amber: "#f59e0b",
-    yellow: "#eab308",
-    lime: "#84cc16",
-    green: "#22c55e",
-    emerald: "#10b981",
-    teal: "#14b8a6",
-    cyan: "#06b6d4",
-    sky: "#0ea5e9",
-    blue: "#3b82f6",
-    indigo: "#6366f1",
-    violet: "#8b5cf6",
-    purple: "#a855f7",
-    fuchsia: "#d946ef",
-    pink: "#ec4899",
-    rose: "#f43f5e"
+    red: "#f87171",
+    orange: "#fb923c",
+    amber: "#fbbf24",
+    yellow: "#facc15",
+    lime: "#a3e635",
+    green: "#4ade80",
+    emerald: "#34d399",
+    teal: "#2dd4bf",
+    cyan: "#22d3ee",
+    sky: "#38bdf8",
+    blue: "#60a5fa",
+    indigo: "#818cf8",
+    violet: "#a78bfa",
+    purple: "#c084fc",
+    fuchsia: "#e879f9",
+    pink: "#f472b6",
+    rose: "#fb7185"
   };
 
   private readonly scaleSteps = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
