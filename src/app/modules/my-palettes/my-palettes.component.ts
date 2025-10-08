@@ -30,4 +30,9 @@ export class MyPalettesComponent {
   openExportDialogs() {
     this.dialog.openDialog(ExportDialogComponent)
   }
+
+  deletePalette(id: string) {
+    this.palettesService.deletePalette(id)
+    this.loadPalletes()
+  }
 }
