@@ -3,6 +3,7 @@ import { ButtonComponent } from "../../../../../../shared/ui/button/button.compo
 import { PaletteService } from '../../../../../../core/services/app/palette.service';
 import { PaletteColor } from '../../../../../../core/interfaces/palette';
 import { ToastService } from '../../../../../../core/services/toast.service';
+import { colorGenerationService } from '../../../../../../core/services/app/color-generation.service';
 
 @Component({
   selector: 'app-color-shades',
@@ -11,6 +12,7 @@ import { ToastService } from '../../../../../../core/services/toast.service';
 })
 export class ColorShadesComponent {
   paletteService = inject(PaletteService)
+  colorGeneration = inject(colorGenerationService)
   color = input.required<PaletteColor>()
   index = input.required<number>()
   toast = inject(ToastService)
@@ -30,6 +32,12 @@ export class ColorShadesComponent {
 
   editName(value: string) {
     this.paletteService.renameColorInPalette(this.index(), value)
+  }
+
+  randomColor() {
+    const newHex = this.colorGeneration.generateRandomColor()
+    const newColor = this.colorGeneration.generateShades(this.color.name, newHex);
+    this.color().shades = newColor;
   }
 
   copyColor(colorHex: string) {
